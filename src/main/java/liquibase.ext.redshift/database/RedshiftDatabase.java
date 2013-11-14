@@ -166,6 +166,16 @@ public class RedshiftDatabase extends PostgresDatabase {
     }
 
     @Override
+    public String getShortName() {
+        return "redshift";
+    }
+
+    @Override
+    protected String getDefaultDatabaseProductName() {
+        return "Redshift";
+    }
+
+    @Override
     public boolean isReservedWord(String tableName) {
         if (super.isReservedWord(tableName)) {
             return true;
