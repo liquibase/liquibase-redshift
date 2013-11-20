@@ -3,6 +3,7 @@ package liquibase.ext.redshift.database;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.core.PostgresDatabase;
 import liquibase.exception.DatabaseException;
+import liquibase.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -162,7 +163,9 @@ public class RedshiftDatabase extends PostgresDatabase {
 
     @Override
     public boolean isCorrectDatabaseImplementation(DatabaseConnection conn) throws DatabaseException {
-        return conn.getURL().contains(".redshift.") || conn.getURL().contains(":5439");
+        return StringUtils.trimToEmpty(System.getProperty("liquibase.ext.redshift.force")).equalsIgnoreCase("true")
+                || conn.getURL().contains(".redshift.")
+                || conn.getURL().contains(":5439");
     }
 
     @Override
