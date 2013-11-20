@@ -162,7 +162,7 @@ public class RedshiftDatabase extends PostgresDatabase {
 
     @Override
     public boolean isCorrectDatabaseImplementation(DatabaseConnection conn) throws DatabaseException {
-        return conn.getURL().contains(".redshift.");
+        return conn.getURL().contains(".redshift.") || conn.getURL().contains(":5439");
     }
 
     @Override
