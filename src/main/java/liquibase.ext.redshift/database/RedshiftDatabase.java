@@ -187,4 +187,9 @@ public class RedshiftDatabase extends PostgresDatabase {
         return redshiftReservedWords.contains(tableName.toUpperCase());
 
     }
+
+    @Override
+    public String getCurrentDateTimeFunction() {
+        return "GETDATE()";
+    }
 }
