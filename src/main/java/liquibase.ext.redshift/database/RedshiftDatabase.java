@@ -14,6 +14,8 @@ public class RedshiftDatabase extends PostgresDatabase {
     private Set<String> redshiftReservedWords = new HashSet<String>();
 
     public RedshiftDatabase() {
+        super.setCurrentDateTimeFunction("GETDATE()");
+
         redshiftReservedWords.addAll(Arrays.asList("AES128",
                 "AES256",
                 "ALL",
