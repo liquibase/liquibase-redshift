@@ -4,6 +4,7 @@ import liquibase.database.Database;
 import liquibase.exception.DatabaseException;
 import liquibase.snapshot.DatabaseSnapshot;
 import liquibase.snapshot.InvalidExampleException;
+import liquibase.snapshot.SnapshotGenerator;
 import liquibase.structure.DatabaseObject;
 
 public class ForeignKeySnapshotGenerator extends liquibase.snapshot.jvm.ForeignKeySnapshotGenerator {
@@ -15,6 +16,11 @@ public class ForeignKeySnapshotGenerator extends liquibase.snapshot.jvm.ForeignK
     @Override
     protected void addTo(DatabaseObject foundObject, DatabaseSnapshot snapshot) throws DatabaseException, InvalidExampleException {
         //Redshift does not support calls to MetaData.getIncomingKeys() and doesn't really support FKs anyway
+    }
+
+    @Override
+    public Class<? extends SnapshotGenerator>[] replaces() {
+        return new Class[] { liquibase.snapshot.jvm.ForeignKeySnapshotGenerator.class} ;
     }
 
     @Override
