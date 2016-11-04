@@ -3,6 +3,8 @@ package liquibase.ext.redshift.database;
 import liquibase.database.DatabaseConnection;
 import liquibase.database.core.PostgresDatabase;
 import liquibase.exception.DatabaseException;
+import liquibase.statement.SqlStatement;
+import liquibase.statement.core.RawSqlStatement;
 import liquibase.util.StringUtils;
 
 import java.util.Arrays;
@@ -194,4 +196,10 @@ public class RedshiftDatabase extends PostgresDatabase {
     public String getCurrentDateTimeFunction() {
         return "GETDATE()";
     }
+    
+    @Override
+    protected SqlStatement getConnectionSchemaNameCallStatement() {
+        return new RawSqlStatement("select current_schema()");
+    }
+
 }
