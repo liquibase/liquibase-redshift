@@ -170,7 +170,7 @@ public class RedshiftDatabase extends PostgresDatabase {
     @Override
     public boolean isCorrectDatabaseImplementation(DatabaseConnection conn) throws DatabaseException {
         return StringUtils.trimToEmpty(System.getProperty("liquibase.ext.redshift.force")).equalsIgnoreCase("true")
-                || conn.getURL().contains(".redshift.")
+                || conn.getURL().contains("redshift")
                 || conn.getURL().contains(":5439");
     }
 
