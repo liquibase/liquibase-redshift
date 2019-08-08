@@ -6,6 +6,8 @@ import liquibase.exception.DatabaseException;
 import liquibase.statement.SqlStatement;
 import liquibase.statement.core.RawSqlStatement;
 import liquibase.util.StringUtils;
+import liquibase.database.ObjectQuotingStrategy;
+import liquibase.structure.DatabaseObject;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -168,7 +170,7 @@ public class RedshiftDatabase extends PostgresDatabase {
     @Override
     public boolean isCorrectDatabaseImplementation(DatabaseConnection conn) throws DatabaseException {
         return StringUtils.trimToEmpty(System.getProperty("liquibase.ext.redshift.force")).equalsIgnoreCase("true")
-                || conn.getURL().contains(".redshift.")
+                || conn.getURL().contains("redshift")
                 || conn.getURL().contains(":5439");
     }
 
@@ -190,6 +192,34 @@ public class RedshiftDatabase extends PostgresDatabase {
 
         return redshiftReservedWords.contains(tableName.toUpperCase());
 
+    }
+
+    @Override
+    public String escapeObjectName(String objectName, final Class<? extends DatabaseObject> objectType) {
+        if (objectName != null) {
+            objectName = objectName.trim();
+            if (mustQuoteObjectName(objectName, objectType)) {
+                return quoteObject(objectName, objectType);
+            } else if (quotingStrategy == ObjectQuotingStrategy.QUOTE_ALL_OBJECTS) {
+                return quoteObject(objectName, objectType);
+            }
+        }
+        return objectName;
+    }
+
+    @Override
+    public String getDefaultDriver(String url) {
+        if (url.startsWith("jdbc:postgresql:")) {
+            return "org.postgresql.Driver";
+        } else if(url.startsWith("jdbc:redshift:")){
+            return "com.amazon.redshift.jdbc42.Driver";
+        }
+        return null;
+    }
+
+    @Override
+    public Integer getDefaultPort() {
+        return 5439;
     }
 
     @Override
