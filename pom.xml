@@ -28,8 +28,9 @@
 
     <scm>
         <connection>scm:git:git@github.com:liquibase/liquibase-redshift.git</connection>
-        <url>scm:git:https://github.com/liquibase/liquibase-redshift.git</url>
+        <url>scm:git:git@github.com:liquibase/liquibase-redshift.git</url>
         <developerConnection>scm:git:git@github.com:liquibase/liquibase-redshift.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
 
 	<developers>
