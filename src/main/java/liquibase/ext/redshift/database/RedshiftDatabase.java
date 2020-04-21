@@ -15,6 +15,8 @@ import java.util.Set;
 
 public class RedshiftDatabase extends PostgresDatabase {
 
+    private static final int HIGH_PRIORITY = 5;
+
     private Set<String> redshiftReservedWords = new HashSet<String>();
 
     public RedshiftDatabase() {
@@ -182,6 +184,11 @@ public class RedshiftDatabase extends PostgresDatabase {
     @Override
     protected String getDefaultDatabaseProductName() {
         return "Redshift";
+    }
+
+    @Override
+    public int getPriority() {
+        return HIGH_PRIORITY;
     }
 
     @Override
