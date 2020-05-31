@@ -4,7 +4,7 @@
 
 	<groupId>org.liquibase.ext</groupId>
 	<artifactId>liquibase-redshift</artifactId>
-	<version>3.9.0</version>
+	<version>3.9.1-SNAPSHOT</version>
 
 	<name>Liquibase Extension: Amazon Redshift Support</name>
 	<description>Adds support for Amazon redshift</description>
@@ -29,7 +29,7 @@
     <scm>
 		<connection>scm:git:http://github.com/liquibase/liquibase-redshift.git</connection>
 		<url>https://github.com/liquibase/liquibase-redshift</url>
-        <tag>liquibase-redshift-3.9.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
 	<developers>
