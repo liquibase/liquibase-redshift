@@ -4,7 +4,7 @@
 
 	<groupId>org.liquibase.ext</groupId>
 	<artifactId>liquibase-redshift</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>4.0.0-beta2-SNAPSHOT</version>
 
 	<name>Liquibase Extension: Amazon Redshift Support</name>
 	<description>Adds support for Amazon redshift</description>
@@ -27,9 +27,8 @@
 	</issueManagement>
 
     <scm>
-        <connection>scm:git:git@github.com:liquibase/liquibase-redshift.git</connection>
-        <url>scm:git:git@github.com:liquibase/liquibase-redshift.git</url>
-        <developerConnection>scm:git:git@github.com:liquibase/liquibase-redshift.git</developerConnection>
+		<connection>scm:git:http://github.com/liquibase/liquibase-redshift.git</connection>
+		<url>https://github.com/liquibase/liquibase-redshift</url>
         <tag>HEAD</tag>
     </scm>
 
@@ -52,7 +51,7 @@
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.0.0-beta1</version>
+			<version>4.0.0-beta2</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -101,7 +100,7 @@
 							<configuration>
 								<rules>
 									<requireJavaVersion>
-										<version>1.6</version>
+										<version>1.8</version>
 									</requireJavaVersion>
 								</rules>
 							</configuration>
@@ -120,7 +119,17 @@
 					<artifactId>maven-release-plugin</artifactId>
                     <version>2.5.3</version>
 					<configuration>
+                        <stagingRepository>/tmp/maven-snapshot</stagingRepository>
 						<mavenExecutorId>forked-path</mavenExecutorId>
+                        <pushChanges>false</pushChanges>
+					</configuration>
+				</plugin>
+
+
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<configuration>
+						<skip>false</skip>
 					</configuration>
 				</plugin>
 
@@ -143,14 +152,29 @@
 						<nexusUrl>https://oss.sonatype.org/service/local/staging/deploy/maven2/</nexusUrl>
 					</configuration>
 				</plugin>
+				<plugin>
+    					<groupId>org.apache.maven.plugins</groupId>
+    					<artifactId>maven-javadoc-plugin</artifactId>
+					<configuration>
+						<author>false</author>
+        					<doctitle>Liquibase CDI ${project.version} API</doctitle>
+        					<quiet>true</quiet>
+        					<doclint>none</doclint>
+        					<encoding>UTF-8</encoding>
+        					<jarOutputDirectory>${project.basedir}/target</jarOutputDirectory>
+    					</configuration>
+    					<executions>
+        					<execution>
+            						<id>jar-javadoc</id>
+            						<goals>
+                						<goal>jar</goal>
+            						</goals>
+            						<phase>package</phase>
+        					</execution>
+    					</executions>
+				</plugin>				
 
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
-                    <configuration>
-                        <skip>false</skip>
-                    </configuration>
-                </plugin>
+
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -158,19 +182,20 @@
     <distributionManagement>
         <repository>
             <id>sonatype-nexus-staging</id>
-            <name>Sonatype Production Repository</name>
+            <name>Nexus Release Repository</name>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
 
         </repository>
         <snapshotRepository>
             <id>sonatype-nexus-snapshots</id>
-            <name>Sontatype Snapshot Repository</name>
+            <name>Sonatype Nexus Snapshots</name>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
 	<profiles>
 		<profile>
+            <!-- Required for deployment to Sonatype -->
 			<id>release-sign-artifacts</id>
 			<activation>
 				<property>
@@ -183,6 +208,17 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
+    						<version>1.6</version>
+                				<configuration>
+                    					<passphrase>${env.GPG_PASSPHRASE}</passphrase>
+                    					<gpgArguments>
+                        					<!-- This is necessary for gpg to not try to use the pinentry programs -->
+                        					<arg>--batch</arg>
+                        					<arg>--no-tty</arg>
+                        					<arg>--pinentry-mode</arg>
+                        					<arg>loopback</arg>
+                    					</gpgArguments>
+                				</configuration>						
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
