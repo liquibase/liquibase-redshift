@@ -5,7 +5,7 @@ import liquibase.database.core.PostgresDatabase;
 import liquibase.exception.DatabaseException;
 import liquibase.statement.SqlStatement;
 import liquibase.statement.core.RawSqlStatement;
-import liquibase.util.StringUtils;
+import liquibase.util.StringUtil;
 import liquibase.database.ObjectQuotingStrategy;
 import liquibase.structure.DatabaseObject;
 
@@ -171,7 +171,7 @@ public class RedshiftDatabase extends PostgresDatabase {
 
     @Override
     public boolean isCorrectDatabaseImplementation(DatabaseConnection conn) throws DatabaseException {
-        return StringUtils.trimToEmpty(System.getProperty("liquibase.ext.redshift.force")).equalsIgnoreCase("true")
+        return StringUtil.trimToEmpty(System.getProperty("liquibase.ext.redshift.force")).equalsIgnoreCase("true")
                 || conn.getURL().contains("redshift")
                 || conn.getURL().contains(":5439");
     }
