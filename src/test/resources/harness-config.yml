@@ -3,7 +3,7 @@ context: testContext
 
 databasesUnderTest:
   - name: redshift
-    version: 1.0.22169
-    url: jdbc:redshift://liquibase-redshift-cluster.c54kgssoutuo.us-east-1.redshift.amazonaws.com:5439/dev
-    username: awsuser
-    password: Liquibase01
+    version: {version}
+    url: jdbc:redshift://{account_id}.redshift.amazonaws.com:5439
+    username: {username}
+    password: {password}
