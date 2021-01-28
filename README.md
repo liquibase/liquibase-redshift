@@ -1,4 +1,4 @@
-# Liquibase Redshift Extension
+# DBeaver Fork from Liquibase Redshift Extension
 ==================
 
 This extension lets you use Liquibase with an Amazon Redshift database
