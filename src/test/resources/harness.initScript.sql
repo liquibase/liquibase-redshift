@@ -1,10 +1,6 @@
--- DROP DATABASE IF EXISTS lbcat;
--- CREATE DATABASE lbcat;
--- USE DATABASE lbcat;
--- USE SCHEMA public;
 
 CREATE TABLE authors (
-                         id int,
+                         id INT NOT NULL,
                          first_name VARCHAR (50) NOT NULL,
                          last_name VARCHAR (50) NOT NULL,
                          email VARCHAR (100) NOT NULL,
@@ -18,11 +14,8 @@ INSERT INTO authors VALUES ('1','Eileen','Lubowitz','ppaucek@example.org','1991-
                            ('4','Nicolas','Buckridge','xhoeger@example.net','2017-02-03','2019-04-22 02:04:41'),
                            ('5','Jayden','Walter','lillian66@example.com','2010-02-27','1990-02-04 02:32:00');
 
-DROP TABLE IF EXISTS posts;
-
-
 CREATE TABLE posts (
-                       id int,
+                       id INT NOT NULL,
                        author_id INT NOT NULL,
                        title VARCHAR (255) NOT NULL,
                        description VARCHAR (500) NOT NULL,
