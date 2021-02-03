@@ -46,7 +46,12 @@
 			<timezone>-6</timezone>
 		</developer>
 	</developers>
-
+	<repositories>
+		<repository>
+			<id>redshift</id>
+			<url>http://redshift-maven-repository.s3-website-us-east-1.amazonaws.com/release</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.liquibase</groupId>
@@ -58,6 +63,17 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 			<version>4.13.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-test-harness</artifactId>
+			<version>1.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.amazon.redshift</groupId>
+			<artifactId>redshift-jdbc42</artifactId>
+			<version>1.2.43.1067</version>
 		</dependency>
 	</dependencies>
 
