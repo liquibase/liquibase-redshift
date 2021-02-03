@@ -17,3 +17,6 @@ This file should contain the connection information for all the databases you wa
 Redshift specific change objects tests created exclusively to test this extension (These test files will be located in the
 `src/test/resources/liquibase/harness/changelogs/redshift` directory. If the directory does not already exist, please create
     it and add the test files that you would like tested).
+
+#### Troubleshooting notes
+- If IDE doesn't allow you to run LiquibaseHarnessSuiteTest as test class, mark test/groovy folder as test classes folder in your IDE
