@@ -1,12 +1,12 @@
 # Liquibase Redshift Extension 
 
-This is a Liquibase extension for Redshift support.
+This is a Liquibase extension for connecting to a Redshift database.
 
 [Amazon Redshift](https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html) is a fully managed, petabyte-scale data warehouse service in the cloud. 
 
 ## Configuring the extension
 
-These instructions will help you make the extension up and running on your local machine for development and testing purposes.
+These instructions will help you get the extension up and running on your local machine for development and testing purposes. This extension has a pre requisite of Liquibase core in order to use it. Liquibase core can be found at https://www.liquibase.org/download
 
 ### Liquibase CLI
 
@@ -21,7 +21,7 @@ Specify the Liquibase extension in the `<dependency>` section of your POM file b
      include <groupId>, <artifactID>, and <version> elements-->
      <groupId>org.liquibase</groupId>
      <artifactId>liquibase-maven-plugin</artifactId>
-     <version>4.2.0</version>
+     <version>4.3.2</version>
      <configuration>
         <!--set values for Liquibase properties and settings
         for example, the location of a properties file to use-->
