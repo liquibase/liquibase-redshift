@@ -1,4 +1,4 @@
-# Liquibase Redshift Extension 
+# Liquibase Redshift Extension [![Build and Test Extension](https://github.com/liquibase/liquibase-redshift/actions/workflows/build.yml/badge.svg)](https://github.com/liquibase/liquibase-redshift/actions/workflows/build.yml)
 
 This is a Liquibase extension for connecting to a Redshift database.
 
