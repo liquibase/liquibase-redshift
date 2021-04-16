@@ -6,7 +6,7 @@ This is a Liquibase extension for connecting to a Redshift database.
 
 ## Configuring the extension
 
-These instructions will help you get the extension up and running on your local machine for development and testing purposes. This extension has a pre requisite of Liquibase core in order to use it. Liquibase core can be found at https://www.liquibase.org/download
+These instructions will help you get the extension up and running on your local machine for development and testing purposes. This extension has a prerequisite of Liquibase core in order to use it. Liquibase core can be found at https://www.liquibase.org/download
 
 ### Liquibase CLI
 
