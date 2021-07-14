@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+        <!--https://docs.liquibase.com/change-types/community/create-procedure.html-->
+        <!--Liquibase community doesn't support snapshot generation for procedures thus
+            expectedSnapshot file will be empty for this change type-->
+    <changeSet author="as" id="1">
+        <createProcedure
+                comments="test procedure"
+                dbms="postgresql"
+                encoding="UTF-8"
+                path="createProcedure.txt"
+                procedureName="test_procedure"
+                relativeToChangelogFile="true">
+        </createProcedure>
+        <rollback>
+            <dropProcedure procedureName="test_procedure"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
