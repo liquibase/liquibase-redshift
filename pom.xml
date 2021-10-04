@@ -4,7 +4,7 @@
 
 	<groupId>org.liquibase.ext</groupId>
 	<artifactId>liquibase-redshift</artifactId>
-	<version>4.5.0</version>
+	<version>4.5.1-SNAPSHOT</version>
 
 	<name>Liquibase Extension: Amazon Redshift Support</name>
 	<description>Adds support for Amazon redshift</description>
