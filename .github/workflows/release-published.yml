@@ -2,7 +2,7 @@ name: Release Extension to Sonatype
 
 on:
   release:
-    types: [published]
+    types: [ published ]
   workflow_dispatch:
     inputs:
       tag:
@@ -38,8 +38,8 @@ jobs:
     needs: [ setup ]
     steps:
       - uses: actions/checkout@v2
-      with:
-        ref: ${{ needs.setup.outputs.tag }}
+        with:
+          ref: ${{ needs.setup.outputs.tag }}
 
       - name: Set up Java for publishing to Maven Central Repository
         uses: actions/setup-java@v2
