@@ -62,14 +62,14 @@ jobs:
       - name: Download snapshot build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -B liquibase-sdk:download-snapshot-artifacts -Dliquibase.sdk.repo=${{ github.repository }} -Dliquibase.sdk.branchSearch=master -Dliquibase.sdk.artifactPattern=liquibase-hibernate-artifacts -Dliquibase.sdk.downloadDirectory=original-artifacts
+        run: mvn -B liquibase-sdk:download-snapshot-artifacts -Dliquibase.sdk.repo=${{ github.repository }} -Dliquibase.sdk.branchSearch=master -Dliquibase.sdk.artifactPattern=liquibase-redshift-artifacts -Dliquibase.sdk.downloadDirectory=original-artifacts
 
       - name: Re-version Artifacts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_PASSWORD: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          (cd original-artifacts && unzip liquibase-hibernate-artifacts.zip && rm liquibase-hibernate-artifacts.zip)
+          (cd original-artifacts && unzip liquibase-redshift-artifacts.zip && rm liquibase-redshift-artifacts.zip)
           mvn -B liquibase-sdk:create-release-artifacts -Dliquibase.sdk.repo=${{ github.repository }} -Dliquibase.sdk.inputDirectory=original-artifacts -Dliquibase.sdk.outputDirectory=final-artifacts -Dliquibase.sdk.newVersion=${{ needs.setup.outputs.extensionVersion }} -Dliquibase.sdk.gpgExecutable=/usr/bin/gpg -X
 
       - name: Attach Files to Draft Release

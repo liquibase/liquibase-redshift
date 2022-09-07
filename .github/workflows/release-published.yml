@@ -71,11 +71,11 @@ jobs:
           mvn -B org.apache.maven.plugins:maven-deploy-plugin:3.0.0-M1:deploy-file \
             -Durl=https://oss.sonatype.org/service/local/staging/deploy/maven2/ \
             -DrepositoryId=sonatype-nexus-staging \
-            -DpomFile=liquibase-hibernate5-${version}.pom \
+            -DpomFile=liquibase-redshift-${version}.pom \
             -DgeneratePom=false \
-            -Dfile=liquibase-hibernate5-${version}.jar \
-            -Dsources=liquibase-hibernate5-${version}-sources.jar \
-            -Djavadoc=liquibase-hibernate5-${version}-javadoc.jar \
-            -Dfiles=liquibase-hibernate5-${version}.jar.asc,liquibase-hibernate5-${version}-sources.jar.asc,liquibase-hibernate5-${version}-javadoc.jar.asc,liquibase-hibernate5-${version}.pom.asc \
+            -Dfile=liquibase-redshift-${version}.jar \
+            -Dsources=liquibase-redshift-${version}-sources.jar \
+            -Djavadoc=liquibase-redshift-${version}-javadoc.jar \
+            -Dfiles=liquibase-redshift-${version}.jar.asc,liquibase-redshift-${version}-sources.jar.asc,liquibase-redshift-${version}-javadoc.jar.asc,liquibase-redshift-${version}.pom.asc \
             -Dtypes=jar.asc,jar.asc,jar.asc,pom.asc \
             -Dclassifiers=,sources,javadoc,

@@ -40,7 +40,7 @@ jobs:
       - name: Save Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: liquibase-hibernate-artifacts
+          name: liquibase-redshift-artifacts
           path: |
             target/*.jar
 
@@ -98,15 +98,15 @@ jobs:
             **/target/surefire-reports
             **/target/jacoco.exec
 
-  hibernate-test:
-    name: Test Hibernate ${{ matrix.hibernate }}
+  integration-test:
+    name: Test Harness for Redshift ${{ matrix.redshift }}
     needs: build
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        hibernate: [ "5.5.9.Final", "5.4.33.Final", "5.3.27.Final" ]
+        redshift: [ "" ]
 
     steps:
       - uses: actions/checkout@v2
@@ -127,13 +127,13 @@ jobs:
             ~/.m2/repository/org/liquibase/
 
       - name: Run Tests
-        run: mvn -B jacoco:prepare-agent surefire:test -Dhibernate.version=${{ matrix.hibernate }}
+        run: mvn -B jacoco:prepare-agent surefire:test -Dredshift.version=${{ matrix.redshift }}
 
       - name: Archive Test Results
         if: ${{ always() }}
         uses: actions/upload-artifact@v2
         with:
-          name: test-reports-hibernate-${{ matrix.hibernate }}
+          name: test-reports-redshift-${{ matrix.redshift }}
           path: |
             **/target/surefire-reports
             **/target/jacoco.exec
