@@ -1,0 +1,4 @@
+import liquibase.harness.FoundationalCompatibilitySuite
+
+class LiquibaseHarnessFoundationalCompatibilitySuite extends FoundationalCompatibilitySuite {
+}
