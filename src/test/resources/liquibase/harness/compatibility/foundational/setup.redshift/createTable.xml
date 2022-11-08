@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!--Using specific changeset for Redshift with NUMERIC naming for integer types because Redshift interprets Liquibase INT as SERIAL datatype which it doesn't support-->
+    <changeSet id="1" author="as" labels="foundational">
+        <createTable tableName="foundational_test_table">
+            <column name="id" type="NUMERIC" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="test_1" type="INT"/>
+            <column name="test_2" type="INT"/>
+            <column name="test_3" type="INT"/>
+            <column name="test_4" type="INT"/>
+            <column name="test_5" type="INT"/>
+            <column name="test_6" type="INT"/>
+            <column name="test_7" type="INT"/>
+            <column name="test_8" type="INT"/>
+            <column name="test_9" type="INT"/>
+            <column name="test_10" type="INT"/>
+            <column name="test_11" type="INT"/>
+            <column name="test_12" type="INT"/>
+            <column name="test_13" type="INT"/>
+            <column name="test_14" type="INT"/>
+            <column name="test_15" type="INT"/>
+            <column name="test_16" type="INT"/>
+            <column name="test_17" type="INT"/>
+            <column name="test_18" type="INT"/>
+            <column name="test_19" type="INT"/>
+            <column name="test_20" type="INT"/>
+            <column name="test_21" type="INT"/>
+            <column name="test_22" type="INT"/>
+            <column name="test_23" type="INT"/>
+            <column name="test_24" type="INT"/>
+            <column name="test_25" type="INT"/>
+            <column name="test_26" type="INT"/>
+            <column name="test_27" type="INT"/>
+            <column name="test_28" type="INT"/>
+            <column name="test_29" type="INT"/>
+            <column name="test_30" type="INT"/>
+            <column name="test_31" type="INT"/>
+            <column name="test_32" type="INT"/>
+            <column name="test_33" type="INT"/>
+            <column name="test_34" type="INT"/>
+            <column name="test_35" type="INT"/>
+            <column name="test_36" type="INT"/>
+            <column name="test_37" type="INT"/>
+            <column name="test_38" type="INT"/>
+            <column name="test_39" type="INT"/>
+            <column name="test_40" type="INT"/>
+            <column name="test_41" type="INT"/>
+            <column name="test_42" type="INT"/>
+            <column name="test_43" type="INT"/>
+            <column name="test_44" type="INT"/>
+            <column name="test_45" type="INT"/>
+            <column name="test_46" type="INT"/>
+            <column name="test_47" type="INT"/>
+            <column name="test_48" type="INT"/>
+            <column name="test_49" type="INT"/>
+            <column name="test_50" type="INT"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="foundational_test_table"/>
+            <delete tableName="DATABASECHANGELOG">
+                <where>labels='foundational'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
