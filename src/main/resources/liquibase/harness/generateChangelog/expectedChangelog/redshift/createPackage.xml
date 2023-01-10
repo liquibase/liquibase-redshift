@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet author="as" id="1">
+        <sql>SET SQL_MODE='ORACLE';</sql>
+    </changeSet>
+    <changeSet  author="as" id="2">
+        <pro:createPackage encoding="UTF-8"
+                           packageName="test_package">CREATE OR REPLACE PACKAGE test_package AS FUNCTION getSalary(eid INT)
+            RETURN DECIMAL(10,2);
+            END;</pro:createPackage>
+        <rollback>
+            <pro:dropPackage packageName="test_package"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
