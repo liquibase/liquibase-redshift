@@ -8,11 +8,10 @@
           }
         }
       ],
-      "liquibase.structure.core.Index": [
+      "liquibase.structure.core.PrimaryKey": [
         {
-          "index": {
-            "name": "idx_first_name",
-            "unique": false
+          "primaryKey": {
+            "name": "test_pk"
           }
         }
       ]

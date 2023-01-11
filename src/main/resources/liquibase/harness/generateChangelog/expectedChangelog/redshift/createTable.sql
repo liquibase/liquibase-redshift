@@ -1,1 +1,1 @@
-CREATE TABLE "test_table_xml" ("test_column" INTEGER);
+CREATE TABLE "test_table_sql" ("test_column" INTEGER);

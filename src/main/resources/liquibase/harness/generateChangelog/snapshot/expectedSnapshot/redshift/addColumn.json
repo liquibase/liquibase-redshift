@@ -14,7 +14,7 @@
             "name": "test_column",
             "nullable": true,
             "type": {
-              "typeName": "INT4"
+              "typeName": "int4"
             }
           }
         },
@@ -23,7 +23,7 @@
             "name": "varcharColumn",
             "nullable": true,
             "type": {
-              "typeName": "VARCHAR"
+              "typeName": "varchar"
             }
           }
         },
@@ -32,7 +32,7 @@
             "name": "intColumn",
             "nullable": true,
             "type": {
-              "typeName": "INT4"
+              "typeName": "int4"
             }
           }
         },
@@ -41,7 +41,7 @@
             "name": "dateColumn",
             "nullable": true,
             "type": {
-              "typeName": "DATE"
+              "typeName": "date"
             }
           }
         }

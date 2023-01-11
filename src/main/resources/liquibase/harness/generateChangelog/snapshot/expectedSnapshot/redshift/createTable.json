@@ -13,7 +13,7 @@
           "column": {
             "name": "snapshot_test_column",
             "type": {
-              "typeName": "INT4"
+              "typeName": "int4"
             }
           }
         }

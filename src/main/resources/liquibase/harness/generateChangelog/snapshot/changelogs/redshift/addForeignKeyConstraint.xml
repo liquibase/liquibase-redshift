@@ -26,11 +26,6 @@
         </rollback>
     </changeSet>
     <changeSet id="3" author="as">
-        <createIndex tableName="test_table_reference" indexName="test_table_reference_index">
-            <column name="test_column"/>
-        </createIndex>
-    </changeSet>
-    <changeSet id="4" author="as">
         <addForeignKeyConstraint  baseColumnNames="id"
                                   baseTableName="test_table_base"
                                   constraintName="test_fk"
