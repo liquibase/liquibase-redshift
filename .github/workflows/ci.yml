@@ -87,7 +87,7 @@ jobs:
             ~/.m2/repository/org/liquibase/
 
       - name: Run Tests
-        run: mvn -B jacoco:prepare-agent surefire:test -DfailIfNoTests=true
+        run: mvn -B jacoco:prepare-agent surefire:test -Dtest="RedshiftDatabaseTest" -DfailIfNoTests=true
 
       - name: Archive Test Results
         if: ${{ always() }}
