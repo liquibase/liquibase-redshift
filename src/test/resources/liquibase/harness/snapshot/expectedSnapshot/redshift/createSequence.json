@@ -1,0 +1,18 @@
+{
+  "snapshot": {
+    "objects": {
+      "liquibase.structure.core.Sequence": [
+        {
+          "sequence": {
+            "incrementBy": "1\\!\\{java.math.BigInteger\\}",
+            "maxValue": "9223372036854775807\\!\\{java.math.BigInteger\\}",
+            "minValue": "1\\!\\{java.math.BigInteger\\}",
+            "name": "test_sequence",
+            "startValue": "1\\!\\{java.math.BigInteger\\}",
+            "willCycle": false
+          }
+        }
+      ]
+    }
+  }
+}

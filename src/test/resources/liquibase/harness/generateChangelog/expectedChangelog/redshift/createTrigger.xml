@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="as" id="1">
+        <comment>test procedure</comment>
+        <createProcedure
+          encoding="UTF-8"
+          procedureName="test_function">CREATE OR REPLACE FUNCTION test_function()
+            RETURNS trigger
+            AS $$
+            BEGIN
+            RAISE NOTICE 'Test trigger function created';
+            RETURN NEW;
+            END;
+            $$
+            LANGUAGE plpgsql;
+        </createProcedure>
+        <rollback>
+            <sql>DROP FUNCTION test_function()</sql>
+        </rollback>
+    </changeSet>
+    <changeSet  author="as" id="2">
+        <pro:createTrigger disabled="false"
+          encoding="UTF-8"
+          scope="test"
+          tableName="posts"
+          triggerName="test_trigger">CREATE TRIGGER test_trigger
+            BEFORE INSERT ON posts
+            FOR EACH ROW EXECUTE PROCEDURE test_function();
+        </pro:createTrigger>
+        <rollback>
+            <pro:dropTrigger triggerName="test_trigger"
+              tableName="posts"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
