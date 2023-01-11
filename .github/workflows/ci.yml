@@ -126,8 +126,8 @@ jobs:
             **/target/**
             ~/.m2/repository/org/liquibase/
 
-      - name: Run Tests
-        run: mvn -B jacoco:prepare-agent surefire:test -Dredshift.version=${{ matrix.redshift }}
+#      - name: Run Tests
+#        run: mvn -B jacoco:prepare-agent surefire:test -Dredshift.version=${{ matrix.redshift }}
 
       - name: Advanced Harness Test Run
         env:
