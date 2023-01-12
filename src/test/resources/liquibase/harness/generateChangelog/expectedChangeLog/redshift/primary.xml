@@ -6,7 +6,9 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="1" author="as">
         <createTable tableName="test_table">
-            <column name="id" type="INT"/>
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
         <rollback>
             <dropTable tableName="test_table"/>

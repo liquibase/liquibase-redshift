@@ -10,6 +10,7 @@
       encoding="UTF-8"
       functionName="test_function">CREATE OR REPLACE FUNCTION test_function()
       RETURNS trigger
+      STABLE
       AS $$
       BEGIN
       RAISE NOTICE 'Test function created';

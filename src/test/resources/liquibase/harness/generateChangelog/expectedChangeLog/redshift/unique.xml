@@ -15,8 +15,6 @@
     <changeSet id="2" author="as">
         <addUniqueConstraint columnNames="id"
                              constraintName="test_unique_constraint"
-                             deferrable="true"
-                             initiallyDeferred="true"
                              tableName="test_table"
                              validate="true"/>
         <rollback>
