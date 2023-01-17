@@ -18,5 +18,16 @@ Redshift specific change objects tests created exclusively to test this extensio
 `src/test/resources/liquibase/harness/changelogs/redshift` directory. If the directory does not already exist, please create
     it and add the test files that you would like tested).
 
+#### Executing harness Advanced test
+- From your IDE, right click on the `LiquibaseHarnessAdvancedSuiteTest` test class present in `src/test/groovy/liquibase/ext/redshift` directory.
+    - Doing so, will allow you to execute Advanced harness suite, which includes GenerateChangelog and Snapshot tests. Test data for these tests will be located in the
+      `src/main/resources/liquibase/harness/generateChangelog/expectedChangeLog/redshift` and `src/main/resources/liquibase/harness/snapshot/changelogs(expectedSnapshot)/redshift`directories.
+    - If the directories do not already exist, please create them and add the test data files that you would like to be tested.
+
+##### Alternative ways to run advanced harness test
+- Using maven by executing next command:
+    mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=USERNAME -DdbPassword=PASSWORD -DdbUrl=URL test 
+  - where USERNAME, PASSWORD and URL are connection credentials
+
 #### Troubleshooting notes
 - If your IDE doesn't allow you to run LiquibaseHarnessSuiteIT as a test class, mark test/groovy folder as test classes folder in your IDE

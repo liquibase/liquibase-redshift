@@ -5,24 +5,19 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet id="1" author="as">
-        <createTable tableName="test_table">
-            <column name="id" type="INT">
-              <constraints nullable="false"/>
-            </column>
+        <createTable tableName="view_test_table">
+            <column name="test_column" type="INT"/>
         </createTable>
         <rollback>
-            <dropTable tableName="test_table"/>
+            <dropTable tableName="view_test_table"/>
         </rollback>
     </changeSet>
     <changeSet id="2" author="as">
-        <addPrimaryKey
-                columnNames="id"
-                constraintName="test_pk"
-                tableName="test_table"
-                validate="true"/>
+        <createView viewName="test_view">
+            select test_column from view_test_table
+        </createView>
         <rollback>
-            <dropPrimaryKey tableName="test_table"
-                            constraintName="test_pk"/>
+            <dropView viewName="test_view"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>
