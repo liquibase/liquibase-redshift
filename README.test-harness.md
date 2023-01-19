@@ -18,19 +18,19 @@ Redshift specific change objects tests created exclusively to test this extensio
 `src/test/resources/liquibase/harness/changelogs/redshift` directory. If the directory does not already exist, please create
     it and add the test files that you would like tested).
 
-#### Executing harness Advanced test
+#### Executing the Harness Advanced test
 - From your IDE, right click on the `LiquibaseHarnessAdvancedSuiteTest` test class present in `src/test/groovy/liquibase/ext/redshift` directory.
     - Doing so, will allow you to execute Advanced harness suite, which includes GenerateChangelog and Snapshot tests. Test data for these tests will be located in the
       `src/main/resources/liquibase/harness/generateChangelog/expectedChangeLog/redshift` and `src/main/resources/liquibase/harness/snapshot/changelogs(expectedSnapshot)/redshift`directories.
     - If the directories do not already exist, please create them and add the test data files that you would like to be tested.
 
-#### Executing harness Foundational test
+#### Executing the Harness Foundational test
 - From your IDE, right click on the `LiquibaseHarnessFoundationalSuiteTest` test class present in `src/test/groovy/liquibase/ext/redshift` directory.
     - Doing so, will allow you to execute Foundational harness suite. Test data for this test will be located in the
       `src/test/resources/liquibase/harness/compatibility/foundational/expectedResultSet/redshift` directory.
     - If the directory does not already exist, please create it and add the test data files that you would like to be tested.
 
-##### Alternative ways to run harness test suites
+##### Alternative ways to run the Harness test suites
 - Using maven by executing next command:
   mvn -Dtest="TESTSUITE_NAME" -DdbName=redshift -DdbUsername=USERNAME -DdbPassword=PASSWORD -DdbUrl=URL test
     - where USERNAME, PASSWORD and URL are connection credentials and TESTSUITE_NAME is the name of test suite you want to execute (LiquibaseHarnessAdvancedSuiteTest, LiquibaseHarnessFoundationalSuiteTest)
