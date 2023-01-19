@@ -17,18 +17,18 @@ Update this file to add the connection information for all the databases you wan
 Redshift specific change objects tests created exclusively to test this extension (These test files will be located in the
 `src/test/resources/liquibase/harness/changelogs/redshift` directory. If the directory does not already exist, please create
     it and add the test files that you would like tested).
+    
+#### Executing the Harness Foundational test
+- From your IDE, right click on the `LiquibaseHarnessFoundationalSuiteTest` test class present in `src/test/groovy/liquibase/ext/redshift` directory.
+    - Doing so, will allow you to execute Foundational harness suite. Test data for this test will be located in the
+      `src/test/resources/liquibase/harness/compatibility/foundational/expectedResultSet/redshift` directory.
+    - If the directory does not already exist, please create it and add the test data files that you would like to be tested.    
 
 #### Executing the Harness Advanced test
 - From your IDE, right click on the `LiquibaseHarnessAdvancedSuiteTest` test class present in `src/test/groovy/liquibase/ext/redshift` directory.
     - Doing so, will allow you to execute Advanced harness suite, which includes GenerateChangelog and Snapshot tests. Test data for these tests will be located in the
       `src/main/resources/liquibase/harness/generateChangelog/expectedChangeLog/redshift` and `src/main/resources/liquibase/harness/snapshot/changelogs(expectedSnapshot)/redshift`directories.
     - If the directories do not already exist, please create them and add the test data files that you would like to be tested.
-
-#### Executing the Harness Foundational test
-- From your IDE, right click on the `LiquibaseHarnessFoundationalSuiteTest` test class present in `src/test/groovy/liquibase/ext/redshift` directory.
-    - Doing so, will allow you to execute Foundational harness suite. Test data for this test will be located in the
-      `src/test/resources/liquibase/harness/compatibility/foundational/expectedResultSet/redshift` directory.
-    - If the directory does not already exist, please create it and add the test data files that you would like to be tested.
 
 ##### Alternative ways to run the Harness test suites
 - Using maven by executing next command:
