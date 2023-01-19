@@ -129,7 +129,7 @@ jobs:
 #      - name: Run Tests
 #        run: mvn -B jacoco:prepare-agent surefire:test -Dredshift.version=${{ matrix.redshift }}
 
-      - name: Advanced Harness Test Run
+      - name: Harness Foundational Test Suite Run
 #        env:
 #          LIQUIBASE_PRO_LICENSE_KEY: ${{ secrets.PRO_LICENSE_KEY }}
         run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
