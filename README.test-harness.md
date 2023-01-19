@@ -11,7 +11,7 @@ This Liquibase test framework is designed to *also* make it easy for you to test
   - *If this config file does not exist, create a new one using this as an example : https://github.com/liquibase/liquibase-test-harness/blob/main/src/test/resources/harness-config.yml*
 - Your database under test will need to be created and populated prior to the Harness tests running. 
  - Use `harness.initScript.sql` file located in the same `src/test/resources` directory to do this preparatory step.
- - - *If this config file does not exist, create a new one using this as an example : https://github.com/liquibase/liquibase-test-harness/blob/main/src/test/resources/sqlite/sqlite-init.sql*
+ - - *If this script file does not exist, create a new one using this as an example : https://github.com/liquibase/liquibase-test-harness/blob/main/src/test/resources/sqlite/sqlite-init.sql*
 
 #### Executing the Harness Base test
 - From your IDE, right click on the `LiquibaseHarnessSuiteIT` test class present in `src/test/groovy` directory.
