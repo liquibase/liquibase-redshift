@@ -6,17 +6,19 @@ This Liquibase test framework is designed to *also* make it easy for you to test
 
 #### Configuring your connections
 
-- We have provided a `harness-config.yml` file in `src/test/resources` directory.
-Update this file to add the connection information for all the databases you want the Liquibase Redshift extension to be tested against.
+- Use the provided `harness-config.yml` file in `src/test/resources` directory.  
+- Update this file to add the connection information for all the databases you want the Liquibase Redshift extension to be tested against.
+  - *If this config file does not exist, create a new one using this as an example : https://github.com/liquibase/liquibase-test-harness/blob/main/src/test/resources/harness-config.yml*
+- Your database under test will need to be created and populated prior to the Harness tests running. 
+ - Use `harness.initScript.sql` file located in the same `src/test/resources` directory to do this preparatory step.
+ - - *If this config file does not exist, create a new one using this as an example : https://github.com/liquibase/liquibase-test-harness/blob/main/src/test/resources/sqlite/sqlite-init.sql*
 
-- Use `harness.initScript.sql` file to create and populate the test database(s) for harness integration tests.
-
-#### Executing the tests
+#### Executing the Harness Base test
 - From your IDE, right click on the `LiquibaseHarnessSuiteIT` test class present in `src/test/groovy` directory.
   - Doing so, will allow you to execute all the standard change object tests in the liquibase-test-harness as well as the
 Redshift specific change objects tests created exclusively to test this extension (These test files will be located in the
-`src/test/resources/liquibase/harness/changelogs/redshift` directory. If the directory does not already exist, please create
-    it and add the test files that you would like tested).
+`src/test/resources/liquibase/harness/changelogs/redshift` directory. 
+  - If the directory does not already exist, please create it and add the test files that you would like tested).
     
 #### Executing the Harness Foundational test
 - From your IDE, right click on the `LiquibaseHarnessFoundationalSuiteTest` test class present in `src/test/groovy/liquibase/ext/redshift` directory.
@@ -32,7 +34,7 @@ Redshift specific change objects tests created exclusively to test this extensio
 
 ##### Alternative ways to run the Harness test suites
 - Using maven by executing next command:
-  mvn -Dtest="TESTSUITE_NAME" -DdbName=redshift -DdbUsername=USERNAME -DdbPassword=PASSWORD -DdbUrl=URL test
+  `mvn -Dtest="TESTSUITE_NAME" -DdbName=redshift -DdbUsername=USERNAME -DdbPassword=PASSWORD -DdbUrl=URL test`
     - where USERNAME, PASSWORD and URL are connection credentials and TESTSUITE_NAME is the name of test suite you want to execute (LiquibaseHarnessAdvancedSuiteTest, LiquibaseHarnessFoundationalSuiteTest)
 
 #### Troubleshooting notes
