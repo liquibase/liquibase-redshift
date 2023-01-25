@@ -1,0 +1,18 @@
+{
+  "snapshot": {
+    "objects": {
+      "liquibase.structure.core.Table": [
+        {
+          "table": {
+            "name": "test_table_base"
+          }
+        },
+        {
+          "table": {
+            "name": "test_table_reference"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -16,21 +16,21 @@
     </changeSet>
     <changeSet id="2" author="as">
         <createTable tableName="test_table_reference">
-            <column name="id" type="INT"/>
-            <column name="test_column" type="INT">
+            <column name="id" type="INT">
                 <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="test_column" type="INT">
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
         <rollback>
             <dropTable tableName="test_table_reference"/>
         </rollback>
     </changeSet>
-    <changeSet id="3" author="as">
+    <changeSet id="4" author="as">
         <addForeignKeyConstraint  baseColumnNames="id"
                                   baseTableName="test_table_base"
                                   constraintName="test_fk"
-                                  onDelete="CASCADE"
-                                  onUpdate="RESTRICT"
                                   referencedColumnNames="test_column"
                                   referencedTableName="test_table_reference"
                                   validate="true"/>

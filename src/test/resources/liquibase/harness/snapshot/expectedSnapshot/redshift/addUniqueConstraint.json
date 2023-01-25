@@ -4,21 +4,18 @@
       "liquibase.structure.core.Table": [
         {
           "table": {
-            "name": "test_table_base"
-          }
-        },
-        {
-          "table": {
-            "name": "test_table_reference"
+            "name": "test_table"
           }
         }
       ],
-      "liquibase.structure.core.ForeignKey": [
+      "liquibase.structure.core.UniqueConstraint": [
         {
-          "foreignKey": {
+          "uniqueConstraint": {
             "deferrable": false,
+            "disabled": false,
             "initiallyDeferred": false,
-            "name": "test_fk"
+            "name": "test_unique_constraint",
+            "validate": true
           }
         }
       ]

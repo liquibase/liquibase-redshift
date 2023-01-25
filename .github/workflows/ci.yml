@@ -126,13 +126,11 @@ jobs:
             **/target/**
             ~/.m2/repository/org/liquibase/
 
-#      - name: Run Tests
-#        run: mvn -B jacoco:prepare-agent surefire:test -Dredshift.version=${{ matrix.redshift }}
+      - name: Foundational Harness Test Run
+        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
       - name: Advanced Harness Test Run
-#        env:
-#          LIQUIBASE_PRO_LICENSE_KEY: ${{ secrets.PRO_LICENSE_KEY }}
-        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
       - name: Archive Test Results
         if: ${{ always() }}
