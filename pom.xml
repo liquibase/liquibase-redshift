@@ -144,6 +144,33 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.athaydes</groupId>
+            <artifactId>spock-reports</artifactId>
+            <version>1.7.1</version>
+            <scope>test</scope>
+            <!-- this avoids affecting your version of Groovy/Spock -->
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- // if you don't already have slf4j-api and an implementation of it in the classpath, add this! -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.6</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
