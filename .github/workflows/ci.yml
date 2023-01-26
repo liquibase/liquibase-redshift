@@ -121,9 +121,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up JDK
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: 11
           distribution: 'temurin'
           cache: 'maven'
 
@@ -150,9 +150,10 @@ jobs:
             **/target/surefire-reports
             **/target/jacoco.exec
 
-      - name: Archive Mongo Database Test Results
+      - name: Archive Redshift Test Results
+        if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
-          name: mongodb-test-results
+          name: redshift-test-results
           path: build/spock-reports
 
