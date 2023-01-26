@@ -141,14 +141,14 @@ jobs:
       - name: Advanced Harness Test Run
         run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
-      - name: Archive Test Results
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-reports-redshift-${{ matrix.redshift }}
-          path: |
-            **/target/surefire-reports
-            **/target/jacoco.exec
+#      - name: Archive Test Results
+#        if: ${{ always() }}
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: test-reports-redshift-${{ matrix.redshift }}
+#          path: |
+#            **/target/surefire-reports
+#            **/target/jacoco.exec
 
       - name: Archive Redshift Test Results
         if: ${{ always() }}
