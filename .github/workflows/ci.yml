@@ -14,6 +14,15 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+    inputs:
+      liquibaseVersion:
+        description: 'Liquibase Version'
+        required: false
+      extensionVersion:
+        description: 'Extension Version (Defaults to Liquibase Version)'
+        required: false
+
 jobs:
   build:
     name: Build & Package
@@ -140,4 +149,10 @@ jobs:
           path: |
             **/target/surefire-reports
             **/target/jacoco.exec
+
+      - name: Archive Mongo Database Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: mongodb-test-results
+          path: build/spock-reports
 
