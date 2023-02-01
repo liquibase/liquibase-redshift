@@ -87,7 +87,7 @@ jobs:
             ~/.m2/repository/org/liquibase/
 
       - name: Run Tests
-        run: mvn -B jacoco:prepare-agent surefire:test -DfailIfNoTests=true
+        run: mvn -B jacoco:prepare-agent surefire:test -Dtest="RedshiftDatabaseTest" -DfailIfNoTests=true
 
       - name: Archive Test Results
         if: ${{ always() }}
@@ -98,43 +98,44 @@ jobs:
             **/target/surefire-reports
             **/target/jacoco.exec
 
-#  integration-test:
-#    name: Test Harness for Redshift ${{ matrix.redshift }}
-#    needs: build
-#    runs-on: ubuntu-latest
-#
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        redshift: [ "" ]
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#
-#      - name: Set up JDK
-#        uses: actions/setup-java@v2
-#        with:
-#          java-version: 17
-#          distribution: 'temurin'
-#          cache: 'maven'
-#
-#      - name: Build Cache
-#        uses: actions/cache@v3.0.5
-#        with:
-#          key: build-${{ github.run_number }}-${{ github.run_attempt }}
-#          path: |
-#            **/target/**
-#            ~/.m2/repository/org/liquibase/
-#
-#      - name: Run Tests
-#        run: mvn -B jacoco:prepare-agent surefire:test -Dredshift.version=${{ matrix.redshift }}
-#
-#      - name: Archive Test Results
-#        if: ${{ always() }}
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: test-reports-redshift-${{ matrix.redshift }}
-#          path: |
-#            **/target/surefire-reports
-#            **/target/jacoco.exec
+  integration-test:
+    name: Test Harness for Redshift ${{ matrix.redshift }}
+    needs: build
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        redshift: [ "" ]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build Cache
+        uses: actions/cache@v3.0.5
+        with:
+          key: build-${{ github.run_number }}-${{ github.run_attempt }}
+          path: |
+            **/target/**
+            ~/.m2/repository/org/liquibase/
+
+      - name: Foundational Harness Test Run
+        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+
+      - name: Advanced Harness Test Run
+        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+
+      - name: Archive Redshift Test Results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: redshift-test-results
+          path: build/spock-reports
 
