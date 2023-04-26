@@ -126,6 +126,9 @@ jobs:
             **/target/**
             ~/.m2/repository/org/liquibase/
 
+      - name: Harness Test Run
+        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+
       - name: Foundational Harness Test Run
         run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
