@@ -1,4 +1,5 @@
-
+--liquibase formatted sql
+--changeset liquibase:1 runAlways:true
 CREATE TABLE authors (
                          id INT NOT NULL,
                          first_name VARCHAR (50) NOT NULL,

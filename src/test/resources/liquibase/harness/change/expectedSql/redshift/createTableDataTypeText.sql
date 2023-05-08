@@ -1,1 +1,1 @@
-CREATE TABLE createTableDataTypeText (textCol TEXT)
+CREATE TABLE public.createTableDataTypeText (textCol TEXT)
