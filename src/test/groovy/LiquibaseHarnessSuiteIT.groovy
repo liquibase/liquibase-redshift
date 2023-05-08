@@ -1,4 +1,5 @@
-import liquibase.harness.BaseHarnessSuite
+import liquibase.harness.change.ChangeObjectTests
 
-class LiquibaseHarnessSuiteIT extends BaseHarnessSuite {
+// TODO revert ChangeObjectTests back to BaseHarnessSuite after DAT-14706
+class LiquibaseHarnessSuiteIT extends ChangeObjectTests {
 }
