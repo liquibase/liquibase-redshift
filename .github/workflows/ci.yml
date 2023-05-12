@@ -98,9 +98,41 @@ jobs:
             **/target/surefire-reports
             **/target/jacoco.exec
 
+  prepare-database:
+    name: Clean and initialize database
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: liquibase/liquibase:latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: liquibase-redshift-artifacts
+
+      - name: Download AWS Redshift driver
+        run: wget https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
+
+      - name: Add Redshift extension and driver to liquibase classpath
+        run: |
+          cp redshift-jdbc42-2.1.0.14.jar /liquibase/lib/
+          cp liquibase-redshift-0-SNAPSHOT.jar /liquibase/lib/
+
+      - name: Clean AWS Redshift Database
+        run: liquibase --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ secrets.TH_REDSHIFTURL }}" dropAll
+
+      - name: Init Database
+        run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ secrets.TH_REDSHIFTURL }}" update
+
   integration-test:
     name: Test Harness for Redshift ${{ matrix.redshift }}
-    needs: build
+    needs: prepare-database
     runs-on: ubuntu-latest
     env:
       LIQUIBASE_PRO_LICENSE_KEY: ${{ secrets.PRO_LICENSE_KEY }}
@@ -127,6 +159,9 @@ jobs:
           path: |
             **/target/**
             ~/.m2/repository/org/liquibase/
+
+      - name: Harness Test Run
+        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
       - name: Foundational Harness Test Run
         run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
