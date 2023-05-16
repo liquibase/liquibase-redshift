@@ -32,7 +32,11 @@ jobs:
       - name: Install liquibase-core 0-SNAPSHOT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -B clean liquibase-sdk:install-snapshot -Dliquibase.sdk.branchSearch=MATCHING_BRANCHES,master
+        run: |
+          mvn -B versions:set-property -Dproperty=liquibase-core.version -DnewVersion=0-SNAPSHOT
+          mvn -B liquibase-sdk:install-snapshot \
+          "-Dliquibase.sdk.branchSearch=MATCHING_BRANCHES,master,main" \
+          "-Dliquibase.sdk.repo=liquibase/liquibase,liquibase/liquibase-pro"
 
       - name: Build and Package
         run: mvn -B dependency:go-offline clean package -DskipTests=true
