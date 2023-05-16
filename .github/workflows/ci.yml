@@ -30,7 +30,6 @@ jobs:
           cache: 'maven'
 
       - name: Install liquibase-core 0-SNAPSHOT
-        if: steps.configure-build.outputs.useLiquibaseSnapshot == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: |
