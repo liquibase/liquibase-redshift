@@ -164,6 +164,13 @@ jobs:
             **/target/**
             ~/.m2/repository/org/liquibase/
 
+      - name: Debug
+        run: |
+          pwd
+          ls -l
+          ls -l ~/.m2/repository/org/liquibase/liquibase-commercial/
+          mvn dependency:tree
+
       - name: Harness Test Run
         run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
