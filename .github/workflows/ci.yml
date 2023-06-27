@@ -31,8 +31,12 @@ jobs:
 
       - name: Install liquibase-core 0-SNAPSHOT
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn -B clean liquibase-sdk:install-snapshot -Dliquibase.sdk.branchSearch=MATCHING_BRANCHES,master
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: |
+          mvn -B versions:set-property -Dproperty=liquibase-core.version -DnewVersion=0-SNAPSHOT
+          mvn -B liquibase-sdk:install-snapshot \
+          "-Dliquibase.sdk.branchSearch=${{ steps.configure-build.outputs.liquibaseBranch }},master,main" \
+          "-Dliquibase.sdk.repo=liquibase/liquibase,liquibase/liquibase-pro"
 
       - name: Build and Package
         run: mvn -B dependency:go-offline clean package -DskipTests=true
@@ -134,6 +138,8 @@ jobs:
     name: Test Harness for Redshift ${{ matrix.redshift }}
     needs: prepare-database
     runs-on: ubuntu-latest
+    env:
+      LIQUIBASE_PRO_LICENSE_KEY: ${{ secrets.PRO_LICENSE_KEY }}
 
     strategy:
       fail-fast: false
@@ -158,14 +164,21 @@ jobs:
             **/target/**
             ~/.m2/repository/org/liquibase/
 
+      - name: Debug
+        run: |
+          pwd
+          ls -l
+          ls -l ~/.m2/repository/org/liquibase/liquibase-commercial/
+          mvn dependency:tree
+
       - name: Harness Test Run
         run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
-#      - name: Foundational Harness Test Run
-#        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+      - name: Foundational Harness Test Run
+        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
-#      - name: Advanced Harness Test Run
-#        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+      - name: Advanced Harness Test Run
+        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
       - name: Archive Redshift Test Results
         if: ${{ always() }}
@@ -173,6 +186,7 @@ jobs:
         with:
           name: redshift-test-results
           path: build/spock-reports
+
 
   dependabot:
     name: Merge dependabot
