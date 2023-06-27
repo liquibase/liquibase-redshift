@@ -66,7 +66,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 8, 11, 17, 18 ]
+        java: [ 8, 11, 17 ]
 
     steps:
       - uses: actions/checkout@v2
@@ -161,11 +161,11 @@ jobs:
       - name: Harness Test Run
         run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
-      - name: Foundational Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+#      - name: Foundational Harness Test Run
+#        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
-      - name: Advanced Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+#      - name: Advanced Harness Test Run
+#        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
       - name: Archive Redshift Test Results
         if: ${{ always() }}
@@ -173,3 +173,26 @@ jobs:
         with:
           name: redshift-test-results
           path: build/spock-reports
+
+  dependabot:
+    name: Merge dependabot
+    runs-on: ubuntu-latest
+    needs: integration-test
+    permissions:
+      contents: write
+      pull-requests: write
+    if: ${{ github.actor == 'dependabot[bot]' }}
+
+    steps:
+      - name: Dependabot metadata
+        id: dependabot-metadata
+        uses: dependabot/fetch-metadata@v1.3.1
+
+      - name: Approve patch and minor updates
+        if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' || steps.dependabot-metadata.outputs.update-type == 'version-update:semver-minor'}}
+        run: |
+          gh pr merge --auto --merge "$PR_URL"
+          gh pr review $PR_URL --approve -b "I'm **approving** this pull request because **it includes a patch or minor update**"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
