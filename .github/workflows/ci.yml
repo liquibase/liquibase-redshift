@@ -31,7 +31,7 @@ jobs:
 
       - name: Install liquibase-core 0-SNAPSHOT
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mvn -B versions:set-property -Dproperty=liquibase-core.version -DnewVersion=0-SNAPSHOT
           mvn -B liquibase-sdk:install-snapshot \
