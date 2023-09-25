@@ -3,7 +3,6 @@ context: testContext
 
 databasesUnderTest:
   - name: redshift
-    version: {version}
-    url: jdbc:redshift://{account_id}.redshift.amazonaws.com:5439
-    username: {username}
-    password: {password}
+    url: DBENDPOINT
+    username: USERNAME
+    password: PASSWORD
