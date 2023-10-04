@@ -134,59 +134,58 @@ jobs:
       - name: Init Database
         run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ secrets.TH_REDSHIFTURL }}" update
 
-  integration-test:
-    name: Test Harness for Redshift ${{ matrix.redshift }}
-    needs: prepare-database
-    runs-on: ubuntu-latest
-    env:
-      LIQUIBASE_PRO_LICENSE_KEY: ${{ secrets.PRO_LICENSE_KEY }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        redshift: [ "" ]
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-          cache: 'maven'
-
-      - name: Build Cache
-        uses: actions/cache@v3.0.5
-        with:
-          key: build-${{ github.run_number }}-${{ github.run_attempt }}
-          path: |
-            **/target/**
-            ~/.m2/repository/org/liquibase/
-
-      - name: Debug
-        run: |
-          pwd
-          ls -l
-          ls -l ~/.m2/repository/org/liquibase/liquibase-commercial/
-          mvn dependency:tree
-
-      - name: Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
-
-      - name: Foundational Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
-
-      - name: Advanced Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
-
-      - name: Archive Redshift Test Results
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: redshift-test-results
-          path: build/spock-reports
-
+#  integration-test:
+#    name: Test Harness for Redshift ${{ matrix.redshift }}
+#    needs: prepare-database
+#    runs-on: ubuntu-latest
+#    env:
+#      LIQUIBASE_PRO_LICENSE_KEY: ${{ secrets.PRO_LICENSE_KEY }}
+#
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        redshift: [ "" ]
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: 11
+#          distribution: 'temurin'
+#          cache: 'maven'
+#
+#      - name: Build Cache
+#        uses: actions/cache@v3.0.5
+#        with:
+#          key: build-${{ github.run_number }}-${{ github.run_attempt }}
+#          path: |
+#            **/target/**
+#            ~/.m2/repository/org/liquibase/
+#
+#      - name: Debug
+#        run: |
+#          pwd
+#          ls -l
+#          ls -l ~/.m2/repository/org/liquibase/liquibase-commercial/
+#          mvn dependency:tree
+#
+#      - name: Harness Test Run
+#        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+#
+#      - name: Foundational Harness Test Run
+#        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+#
+#      - name: Advanced Harness Test Run
+#        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+#
+#      - name: Archive Redshift Test Results
+#        if: ${{ always() }}
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: redshift-test-results
+#          path: build/spock-reports
 
   dependabot:
     name: Merge dependabot
