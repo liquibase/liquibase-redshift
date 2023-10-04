@@ -139,6 +139,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>1.5.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.athaydes</groupId>
             <artifactId>spock-reports</artifactId>
             <version>1.7.1</version>
