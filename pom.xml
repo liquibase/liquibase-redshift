@@ -109,6 +109,7 @@
                      <redirectTestOutputToFile>true</redirectTestOutputToFile>
                  </configuration>
              </plugin>
+            <!-- This will be cleaned after the next liquibase parent pom release-->
              <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
