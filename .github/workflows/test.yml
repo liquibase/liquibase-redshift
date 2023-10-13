@@ -88,7 +88,7 @@ jobs:
 
   sonar-pr:
     needs: [ unit-test ]
-    uses: liquibase/build-logic/.github/workflows/sonar-pull-request.yml@DAT-16000
+    uses: liquibase/build-logic/.github/workflows/sonar-pull-request.yml@v0.4.9
     secrets: inherit
 
 #  prepare-database:
