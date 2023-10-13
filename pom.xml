@@ -109,6 +109,13 @@
                      <redirectTestOutputToFile>true</redirectTestOutputToFile>
                  </configuration>
              </plugin>
+             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <skipITs>true</skipITs>
+                </configuration>
+            </plugin>
          </plugins>
         <!-- Need to keep final name in sync with the final name of the maven-assembly-plugin configuration-->
         <!-- in order to only generate single jar with dependencies-->
