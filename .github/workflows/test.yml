@@ -180,7 +180,3 @@ jobs:
 #        with:
 #          name: redshift-test-results
 #          path: build/spock-reports
-
-  dependabot:
-    uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@v0.4.8
-    secrets: inherit
