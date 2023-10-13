@@ -3,75 +3,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-parent-pom</artifactId>
+        <version>0.2.5-SNAPSHOT</version> <!-- Replace with the desired version -->
+    </parent>
+
     <groupId>org.liquibase.ext</groupId>
     <artifactId>liquibase-redshift</artifactId>
-    <version>0-SNAPSHOT</version>
+    <version>4.24.1-SNAPSHOT</version>
 
-    <name>Liquibase Extension: Amazon Redshift support</name>
+    <name>Liquibase Extension Amazon Redshift support</name>
     <description>Add this Liquibase extension to your project to support Amazon Redshift</description>
     <url>https://github.com/liquibase/liquibase-redshift</url>
 
-    <organization>
-        <name>Liquibase</name>
-        <url>http://www.liquibase.com</url>
-    </organization>
-
-    <licenses>
-        <license>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-            <name>Apache License, Version 2.0</name>
-        </license>
-    </licenses>
-
-    <issueManagement>
-        <url>https://github.com/liquibase/liquibase-redshift/issues</url>
-    </issueManagement>
-
-    <scm>
-        <connection>scm:git:http://github.com/liquibase/liquibase-redshift.git</connection>
-        <url>https://github.com/liquibase/liquibase-redshift</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    <developers>
-        <developer>
-            <id>liquibase</id>
-            <name>Liquibase Community</name>
-            <email>community@liquibase.com</email>
-            <roles>
-                <role>architect</role>
-                <role>developer</role>
-            </roles>
-            <timezone>-6</timezone>
-        </developer>
-        <developer>
-            <id>nvoxland</id>
-            <name>Nathan Voxland</name>
-            <email>nathan.voxland@liquibase.org</email>
-            <roles>
-                <role>architect</role>
-                <role>developer</role>
-            </roles>
-            <timezone>-6</timezone>
-        </developer>
-    </developers>
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <liquibase.version>4.24.0</liquibase.version>
-        <liquibase.sdk.github.token>${env.GITHUB_TOKEN}</liquibase.sdk.github.token>
-
-        <sonar.organization>liquibase</sonar.organization>
-        <sonar.projectKey>${project.artifactId}</sonar.projectKey>
-        <sonar.projectName>${project.name}</sonar.projectName>
-        <sonar.projectDescription>${project.description}</sonar.projectDescription>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.scm.provider>git</sonar.scm.provider>
-        <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
-
-        <jacoco.fileset.directory>target</jacoco.fileset.directory>
         <dependency.spock.version>1.3-groovy-2.4</dependency.spock.version>
-        <groovy.version>2.4.21</groovy.version>
+        <groovy-all.version>2.4.17</groovy-all.version>
+        <liquibase.version>4.24.0</liquibase.version>
+        <spock-core.version>1.3-groovy-2.4</spock-core.version>
+        <spock-reports.version>1.3.1</spock-reports.version>
     </properties>
 
     <dependencyManagement>
@@ -83,211 +35,63 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-core</artifactId>
-            <version>${liquibase.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-commercial</artifactId>
-            <version>${liquibase.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
             <version>${dependency.spock.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-            <version>4.13.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.liquibase</groupId>
-            <artifactId>liquibase-test-harness</artifactId>
-            <version>1.0.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.skyscreamer</groupId>
-            <artifactId>jsonassert</artifactId>
-            <version>1.5.1</version>
-        </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
         <dependency>
             <groupId>com.amazon.redshift</groupId>
             <artifactId>redshift-jdbc42</artifactId>
             <version>2.1.0.19</version>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>${groovy.version}</version>
-            <scope>test</scope>
-            <type>pom</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.groovy</groupId>
-                    <artifactId>groovy-testng</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.skyscreamer</groupId>
-            <artifactId>jsonassert</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.athaydes</groupId>
-            <artifactId>spock-reports</artifactId>
-            <version>1.7.1</version>
-            <scope>test</scope>
-            <!-- this avoids affecting your version of Groovy/Spock -->
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <!-- // if you don't already have slf4j-api and an implementation of it in the classpath, add this! -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>2.0.9</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-
+    
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources-filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
+            </testResource>
+            <testResource>
+                <directory>src/test/filtered-resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <plugins>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <configuration>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <release>8</release>
-                    <optimize>true</optimize>
-                    <debug>true</debug>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-<!--                    <redirectTestOutputToFile>true</redirectTestOutputToFile>-->
-                    <reportFormat>plain</reportFormat>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.4.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.5.0</version>
-                <configuration>
-                    <attach>true</attach>
-                    <author>false</author>
-                    <doctitle>Liquibase Redshift ${project.version} API</doctitle>
-                    <quiet>true</quiet>
-                    <doclint>none</doclint>
-                    <encoding>UTF-8</encoding>
-
-                    <includeDependencySources>false</includeDependencySources>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>javadoc-default</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <phase>package</phase>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.gmavenplus</groupId>
-                <artifactId>gmavenplus-plugin</artifactId>
-                <version>2.1.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>compileTests</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.10</version>
-                <configuration>
-                    <fileSets>
-                        <fileSet>
-                            <directory>${jacoco.fileset.directory}</directory>
-                            <includes>
-                                <include>**/jacoco.exec</include>
-                            </includes>
-                        </fileSet>
-                    </fileSets>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.9.1.2184</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.liquibase.ext</groupId>
-                <artifactId>liquibase-sdk-maven-plugin</artifactId>
-                <version>0.10.20</version>
-            </plugin>
-        </plugins>
-
+             <plugin>
+                 <artifactId>maven-surefire-plugin</artifactId>
+                 <dependencies>
+                     <dependency>
+                         <groupId>org.apache.maven.surefire</groupId>
+                         <artifactId>surefire-junit4</artifactId>
+                         <version>3.0.0</version>
+                     </dependency>
+                 </dependencies>
+                 <configuration>
+                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                 </configuration>
+             </plugin>
+         </plugins>
+        <!-- Need to keep final name in sync with the final name of the maven-assembly-plugin configuration-->
+        <!-- in order to only generate single jar with dependencies-->
+        <finalName>${project.name}-${project.version}</finalName>
     </build>
+
 </project>
 
