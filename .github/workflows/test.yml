@@ -14,7 +14,6 @@ jobs:
     secrets: inherit
 
   dependabot:
-    needs: hibernate-test
     uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@v0.4.8
     secrets: inherit
   
