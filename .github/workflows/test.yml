@@ -92,7 +92,7 @@ jobs:
     secrets: inherit
 
   dependabot:
-    needs: build
+    needs: unit-test
     uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@v0.4.9
     secrets: inherit
 
