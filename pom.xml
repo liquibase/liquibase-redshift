@@ -123,7 +123,6 @@
          </plugins>
         <!-- Need to keep final name in sync with the final name of the maven-assembly-plugin configuration-->
         <!-- in order to only generate single jar with dependencies-->
-        <finalName>${project.name}-${project.version}</finalName>
     </build>
 
 </project>
