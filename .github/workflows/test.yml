@@ -91,6 +91,11 @@ jobs:
     uses: liquibase/build-logic/.github/workflows/sonar-pull-request.yml@v0.4.9
     secrets: inherit
 
+  dependabot:
+    needs: build
+    uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@v0.4.9
+    secrets: inherit
+
 #  prepare-database:
 #    name: Clean and initialize database
 #    needs: build
