@@ -88,12 +88,12 @@ jobs:
 
   sonar-pr:
     needs: [ unit-test ]
-    uses: liquibase/build-logic/.github/workflows/sonar-pull-request.yml@v0.4.9
+    uses: liquibase/build-logic/.github/workflows/sonar-pull-request.yml@v0.5.1
     secrets: inherit
 
   dependabot:
     needs: unit-test
-    uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@v0.4.9
+    uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@v0.5.1
     secrets: inherit
 
 #  prepare-database:
