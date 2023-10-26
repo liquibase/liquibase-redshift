@@ -27,6 +27,13 @@
         <jacoco.fileset.directory>target</jacoco.fileset.directory>
     </properties>
 
+    <scm>
+        <connection>scm:git:${project.scm.url}</connection>
+        <developerConnection>scm:git:${project.scm.url}</developerConnection>
+		<url>https://github.com/liquibase/liquibase-redshift.git</url>
+		<tag>HEAD</tag>
+	</scm>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -126,4 +133,3 @@
     </build>
 
 </project>
-
