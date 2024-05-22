@@ -10,14 +10,14 @@
 
     <groupId>org.liquibase.ext</groupId>
     <artifactId>liquibase-redshift</artifactId>
-    <version>4.27.0-SNAPSHOT</version>
+    <version>4.28.0-SNAPSHOT</version>
 
     <name>Liquibase Extension Amazon Redshift support</name>
     <description>Add this Liquibase extension to your project to support Amazon Redshift</description>
     <url>https://github.com/liquibase/liquibase-redshift</url>
 
     <properties>
-        <liquibase.version>4.27.0</liquibase.version>
+        <liquibase.version>4.28.0</liquibase.version>
         <jacoco.fileset.directory>target</jacoco.fileset.directory>
     </properties>
 
