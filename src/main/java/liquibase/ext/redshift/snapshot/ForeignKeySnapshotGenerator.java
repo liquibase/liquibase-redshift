@@ -6,11 +6,15 @@ import liquibase.snapshot.DatabaseSnapshot;
 import liquibase.snapshot.InvalidExampleException;
 import liquibase.snapshot.SnapshotGenerator;
 import liquibase.structure.DatabaseObject;
+import liquibase.ext.redshift.database.RedshiftDatabase;
 
 public class ForeignKeySnapshotGenerator extends liquibase.snapshot.jvm.ForeignKeySnapshotGenerator {
     @Override
     public int getPriority(Class<? extends DatabaseObject> objectType, Database database) {
-        return PRIORITY_DATABASE;
+        if (database instanceof RedshiftDatabase) {
+            return PRIORITY_DATABASE;
+        }
+        return PRIORITY_NONE;
     }
 
     @Override
