@@ -32,13 +32,13 @@ public class RedshiftTagDatabaseGenerator extends TagDatabaseGenerator {
 
     @Override
     public Sql[] generateSql(TagDatabaseStatement statement, Database database, SqlGeneratorChain sqlGeneratorChain) {
-        String tableNameEscaped = database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogTableName());
-        String orderColumnNameEscaped = database.escapeObjectName("ORDEREXECUTED", Column.class);
-        String dateColumnNameEscaped = database.escapeObjectName("DATEEXECUTED", Column.class);
-        String tagColumnNameEscaped = database.escapeObjectName("TAG", Column.class);
-        String tagEscaped = DataTypeFactory.getInstance().fromObject(statement.getTag(), database).objectToSql(statement.getTag(), database);
-
         if (database instanceof RedshiftDatabase) {
+            String tableNameEscaped = database.escapeTableName(database.getLiquibaseCatalogName(), database.getLiquibaseSchemaName(), database.getDatabaseChangeLogTableName());
+            String orderColumnNameEscaped = database.escapeObjectName("ORDEREXECUTED", Column.class);
+            String dateColumnNameEscaped = database.escapeObjectName("DATEEXECUTED", Column.class);
+            String tagColumnNameEscaped = database.escapeObjectName("TAG", Column.class);
+            String tagEscaped = DataTypeFactory.getInstance().fromObject(statement.getTag(), database).objectToSql(statement.getTag(), database);
+
             return new Sql[]{
                     new UnparsedSql(
                             "UPDATE " + tableNameEscaped + " SET " + tagColumnNameEscaped + " = " + tagEscaped +
