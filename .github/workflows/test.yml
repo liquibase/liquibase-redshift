@@ -18,12 +18,12 @@ jobs:
 
   build-test:
     needs: authorize
-    uses: liquibase/build-logic/.github/workflows/os-extension-test.yml@v0.7.8
+    uses: liquibase/build-logic/.github/workflows/os-extension-test.yml@main
     secrets: inherit
     with:
       extraMavenArgs: -Dtest="RedshiftDatabaseTest"
 
   dependabot-automerge:
     needs: build-test
-    uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@v0.7.8
+    uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@main
     secrets: inherit
