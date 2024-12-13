@@ -19,6 +19,7 @@
     <properties>
         <liquibase.version>4.30.0</liquibase.version>
         <jacoco.fileset.directory>target</jacoco.fileset.directory>
+        <redshift.driver.version>2.1.0.14</redshift.driver.version>
     </properties>
 
     <scm>
@@ -43,7 +44,7 @@
         <dependency>
             <groupId>com.amazon.redshift</groupId>
             <artifactId>redshift-jdbc42</artifactId>
-            <version>2.1.0.31</version>
+            <version>${redshift.driver.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
