@@ -41,6 +41,7 @@ jobs:
         with:
           name: liquibase-redshift-artifacts
 
+      # FIXME the redshift jar version should come from the pom.xml file
       - name: Download AWS Redshift driver
         run: wget https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
 
