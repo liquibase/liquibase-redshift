@@ -45,6 +45,12 @@
             <artifactId>redshift-jdbc42</artifactId>
             <version>2.1.0.31</version>
         </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-test-harness</artifactId>
+            <version>1.0.9</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
