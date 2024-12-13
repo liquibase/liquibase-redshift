@@ -47,7 +47,7 @@ jobs:
       - name: Add Redshift extension and driver to liquibase classpath
         run: |
           cp redshift-jdbc42-2.1.0.14.jar /liquibase/lib/
-          cp liquibase-redshift-0-SNAPSHOT.jar /liquibase/lib/
+          cp liquibase-redshift-*-SNAPSHOT.jar /liquibase/lib/
 
       - name: Clean AWS Redshift Database
         run: liquibase --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ secrets.TH_REDSHIFTURL }}" dropAll
