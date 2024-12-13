@@ -16,6 +16,23 @@ jobs:
     steps:
       - run: true
 
+  setup:
+    runs-on: ubuntu-latest
+    needs: authorize
+    outputs:
+      driver_version: ${{ steps.get-driver_version.outputs.driver_version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract driver version to parameter
+        id: get-driver_version
+        run: |
+          driver_version=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=redshift.driver.version -q -DforceStdout)
+          echo "driver_version=${driver_version}" >> $GITHUB_OUTPUT
+  
+
+
   build-test:
     needs: authorize
     uses: liquibase/build-logic/.github/workflows/os-extension-test.yml@main
@@ -25,7 +42,7 @@ jobs:
 
   prepare-database:
     name: Clean and initialize database
-    needs: build-test
+    needs: [setup, build-test]
     runs-on: ubuntu-latest
     container:
       image: liquibase/liquibase:latest
@@ -43,7 +60,7 @@ jobs:
 
       # FIXME the redshift jar version should come from the pom.xml file
       - name: Download AWS Redshift driver
-        run: wget https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
+        run: wget https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/${{ needs.setup.outputs.driver_version }}/redshift-jdbc42-${{ needs.setup.outputs.driver_version }}.jar
 
       - name: Add Redshift extension and driver to liquibase classpath
         run: |
