@@ -50,6 +50,11 @@ jobs:
       #     cp redshift-jdbc42-2.1.0.14.jar /liquibase/lib/
       #     cp liquibase-redshift-*-SNAPSHOT.jar /liquibase/lib/
 
+      - name: Setup Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: '3.11.5'
+          
       - name: Start & Configure LocalStack
         env:
           LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
