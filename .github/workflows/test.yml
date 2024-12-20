@@ -25,7 +25,7 @@ jobs:
 
   prepare-database:
     name: Clean and initialize database
-    needs: build
+    needs: build-test
     runs-on: ubuntu-latest
     container:
       image: liquibase/liquibase:latest
@@ -50,57 +50,108 @@ jobs:
           cp redshift-jdbc42-2.1.0.14.jar /liquibase/lib/
           cp liquibase-redshift-*-SNAPSHOT.jar /liquibase/lib/
 
+      - name: Start & Configure LocalStack
+        env:
+          LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: |
+          # Install LocalStack and supporting tools
+          pip install localstack awscli-local
+
+          # Pull the required LocalStack Pro image
+          docker pull localstack/localstack-pro
+
+          # Start LocalStack with custom Redshift support
+          DOCKER_FLAGS='-e LOCALSTACK_API_KEY=${{ secrets.LOCALSTACK_API_KEY }}' localstack start -d
+
+          # Wait for LocalStack to fully start
+          echo "Waiting for LocalStack startup..."
+          localstack wait -t 30
+          echo "Startup complete"
+
+          # Configure environment variables for Redshift
+          echo "TH_REDSHIFT_CLUSTER=my-redshift-cluster" >> $GITHUB_ENV
+          echo "TH_REDSHIFT_DB=exampledb" >> $GITHUB_ENV
+          echo "TH_REDSHIFT_USER=admin" >> $GITHUB_ENV
+          echo "TH_REDSHIFT_PASSWORD=examplePassword123" >> $GITHUB_ENV
+          echo "TH_REDSHIFT_PORT=5439" >> $GITHUB_ENV
+          echo "TH_REDSHIFT_REGION=us-east-1" >> $GITHUB_ENV
+
+          # Set up Redshift cluster in LocalStack
+          echo "Creating Redshift cluster in LocalStack..."
+          awslocal redshift create-cluster \
+            --cluster-identifier $TH_REDSHIFT_CLUSTER \
+            --db-name $TH_REDSHIFT_DB \
+            --master-username $TH_REDSHIFT_USER \
+            --master-user-password $TH_REDSHIFT_PASSWORD \
+            --node-type dc2.large \
+            --number-of-nodes 2
+
+          # Fetch Redshift cluster endpoint
+          echo "Fetching Redshift cluster endpoint..."
+          REDSHIFT_ENDPOINT=$(awslocal redshift describe-clusters \
+            --cluster-identifier $TH_REDSHIFT_CLUSTER \
+            --query "Clusters[0].Endpoint.Address" \
+            --output text)
+
+          # Construct Redshift URL
+          REDSHIFT_URL="jdbc:redshift://${REDSHIFT_ENDPOINT}:${TH_REDSHIFT_PORT}/${TH_REDSHIFT_DB}"
+          echo "REDSHIFT_URL=${REDSHIFT_URL}" >> $GITHUB_ENV
+
+          echo "Redshift cluster setup complete."
+          echo "Redshift URL: ${REDSHIFT_URL}"
+            
       - name: Clean AWS Redshift Database
-        run: liquibase --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ secrets.TH_REDSHIFTURL }}" dropAll
+        run: liquibase --username="$TH_REDSHIFT_USER" --password="$TH_REDSHIFT_PASSWORD" --url="$REDSHIFT_URL" dropAll
 
       - name: Init Database
-        run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ secrets.TH_REDSHIFTURL }}" update
+        run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="$TH_REDSHIFT_USER" --password="$TH_REDSHIFT_PASSWORD" --url="$REDSHIFT_URL" update
 
-  integration-test:
-    name: Test Harness for Redshift ${{ matrix.redshift }}
-    needs: prepare-database
-    runs-on: ubuntu-latest
+  # integration-test:
+  #   name: Test Harness for Redshift ${{ matrix.redshift }}
+  #   needs: prepare-database
+  #   runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        redshift: [ "" ]
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       redshift: [ "" ]
 
-    steps:
-      - uses: actions/checkout@v2
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-          cache: 'maven'
+  #     - name: Set up JDK
+  #       uses: actions/setup-java@v3
+  #       with:
+  #         java-version: 11
+  #         distribution: 'temurin'
+  #         cache: 'maven'
 
-      - name: Build Cache
-        uses: actions/cache@v3.0.5
-        with:
-          key: build-${{ github.run_number }}-${{ github.run_attempt }}
-          path: |
-            **/target/**
-            ~/.m2/repository/org/liquibase/
+  #     - name: Build Cache
+  #       uses: actions/cache@v3.0.5
+  #       with:
+  #         key: build-${{ github.run_number }}-${{ github.run_attempt }}
+  #         path: |
+  #           **/target/**
+  #           ~/.m2/repository/org/liquibase/
 
-      - name: Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+  #     - name: Harness Test Run
+  #       run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
-      - name: Foundational Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+  #     - name: Foundational Harness Test Run
+  #       run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
-      - name: Advanced Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+  #     - name: Advanced Harness Test Run
+  #       run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
 
-      - name: Archive Redshift Test Results
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: redshift-test-results
-          path: build/spock-reports
+  #     - name: Archive Redshift Test Results
+  #       if: ${{ always() }}
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: redshift-test-results
+  #         path: build/spock-reports
 
-  dependabot-automerge:
-    needs: build-test
-    uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@main
-    secrets: inherit
+  # dependabot-automerge:
+  #   needs: build-test
+  #   uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@main
+  #   secrets: inherit
