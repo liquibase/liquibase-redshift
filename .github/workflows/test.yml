@@ -36,19 +36,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: liquibase-redshift-artifacts
+      # - name: Download Artifacts
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: liquibase-redshift-artifacts
 
-      # FIXME the redshift jar version should come from the pom.xml file
-      - name: Download AWS Redshift driver
-        run: wget https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
+      # # FIXME the redshift jar version should come from the pom.xml file
+      # - name: Download AWS Redshift driver
+      #   run: wget https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
 
-      - name: Add Redshift extension and driver to liquibase classpath
-        run: |
-          cp redshift-jdbc42-2.1.0.14.jar /liquibase/lib/
-          cp liquibase-redshift-*-SNAPSHOT.jar /liquibase/lib/
+      # - name: Add Redshift extension and driver to liquibase classpath
+      #   run: |
+      #     cp redshift-jdbc42-2.1.0.14.jar /liquibase/lib/
+      #     cp liquibase-redshift-*-SNAPSHOT.jar /liquibase/lib/
 
       - name: Start & Configure LocalStack
         env:
