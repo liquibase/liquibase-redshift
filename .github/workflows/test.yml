@@ -34,7 +34,8 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
       # - name: Download Artifacts
       #   uses: actions/download-artifact@v3
@@ -54,7 +55,7 @@ jobs:
         uses: actions/setup-python@v5.3.0
         with:
           python-version: '3.11.5'
-          
+
       - name: Start & Configure LocalStack
         env:
           LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
@@ -62,6 +63,11 @@ jobs:
         run: |
           # Install LocalStack and supporting tools
           pip install localstack awscli-local
+
+          # Install Docker and start the service
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo service docker start
 
           # Pull the required LocalStack Pro image
           docker pull localstack/localstack-pro
