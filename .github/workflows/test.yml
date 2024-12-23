@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: liquibase-redshift-artifacts
 
@@ -55,16 +55,6 @@ jobs:
         uses: actions/setup-python@v5.3.0
         with:
           python-version: '3.11.5'
-
-      # - name: Install liquibase and lpm
-      #   run: |
-      #     wget -O- https://repo.liquibase.com/liquibase.asc | gpg --dearmor > liquibase-keyring.gpg && \
-      #     cat liquibase-keyring.gpg | sudo tee /usr/share/keyrings/liquibase-keyring.gpg > /dev/null && \
-      #     echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/liquibase-keyring.gpg] https://repo.liquibase.com stable main' | sudo tee /etc/apt/sources.list.d/liquibase.list
-      #     sudo apt-get update
-      #     sudo apt-get install liquibase
-      #     curl -L -o lpm-${{ env.LPM_VERSION }}-linux.zip https://github.com/liquibase/liquibase-package-manager/releases/download/v${{ env.LPM_VERSION }}/lpm-${{ env.LPM_VERSION }}-linux.zip
-      #     sudo unzip -o lpm-${{ env.LPM_VERSION }}-linux.zip -d /usr/bin
            
       - name: Set up Docker Buildx
         uses: docker/setup-docker-action@v4
