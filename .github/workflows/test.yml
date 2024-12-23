@@ -65,7 +65,10 @@ jobs:
       #     sudo apt-get install liquibase
       #     curl -L -o lpm-${{ env.LPM_VERSION }}-linux.zip https://github.com/liquibase/liquibase-package-manager/releases/download/v${{ env.LPM_VERSION }}/lpm-${{ env.LPM_VERSION }}-linux.zip
       #     sudo unzip -o lpm-${{ env.LPM_VERSION }}-linux.zip -d /usr/bin
-            
+           
+      - name: Set up Docker Buildx
+        uses: docker/setup-docker-action@v4
+
       - name: Start & Configure LocalStack
         env:
           LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
