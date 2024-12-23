@@ -71,6 +71,7 @@ jobs:
         env:
           LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
+          TH_REDSHIFT_PASSWORD: ${{ secrets.TH_REDSHIFT_PASSWORD }}
         run: |
           # Install LocalStack and supporting tools
           pip install localstack awscli-local
@@ -87,20 +88,20 @@ jobs:
           echo "Startup complete"
 
           # Configure environment variables for Redshift
-          echo "TH_REDSHIFT_CLUSTER=my-redshift-cluster" >> $GITHUB_ENV
+          echo "TH_REDSHIFT_CLUSTER=test-redshift-cluster" >> $GITHUB_ENV
           echo "TH_REDSHIFT_DB=exampledb" >> $GITHUB_ENV
           echo "TH_REDSHIFT_USER=admin" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_PASSWORD=examplePassword123" >> $GITHUB_ENV
+          echo "TH_REDSHIFT_PASSWORD=${{ secrets.TH_REDSHIFT_PASSWORD }}" >> $GITHUB_ENV
           echo "TH_REDSHIFT_PORT=5439" >> $GITHUB_ENV
           echo "TH_REDSHIFT_REGION=us-east-1" >> $GITHUB_ENV
 
           # Set up Redshift cluster in LocalStack
           echo "Creating Redshift cluster in LocalStack..."
           awslocal redshift create-cluster \
-            --cluster-identifier $TH_REDSHIFT_CLUSTER \
-            --db-name $TH_REDSHIFT_DB \
-            --master-username $TH_REDSHIFT_USER \
-            --master-user-password $TH_REDSHIFT_PASSWORD \
+            --cluster-identifier "$TH_REDSHIFT_CLUSTER" \
+            --db-name "$TH_REDSHIFT_DB" \
+            --master-username "$TH_REDSHIFT_USER" \
+            --master-user-password "$TH_REDSHIFT_PASSWORD" \
             --node-type dc2.large \
             --number-of-nodes 2
 
