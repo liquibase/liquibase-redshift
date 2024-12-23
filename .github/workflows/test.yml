@@ -16,12 +16,12 @@ jobs:
     steps:
       - run: true
 
-  # build-test:
-  #   needs: authorize
-  #   uses: liquibase/build-logic/.github/workflows/os-extension-test.yml@main
-  #   secrets: inherit
-  #   with:
-  #     extraMavenArgs: -Dtest="RedshiftDatabaseTest"
+  build-test:
+    needs: authorize
+    uses: liquibase/build-logic/.github/workflows/os-extension-test.yml@main
+    secrets: inherit
+    with:
+      extraMavenArgs: -Dtest="RedshiftDatabaseTest"
 
   prepare-database:
     name: Clean and initialize database
