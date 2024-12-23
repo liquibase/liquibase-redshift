@@ -122,12 +122,18 @@ jobs:
       - name: Clean AWS Redshift Database
         run: |
           liquibase --username="${{ env.TH_REDSHIFT_USER }}" \
+          --classpath="src/test/resources" \
           --driver=com.amazon.redshift.jdbc42.Driver \
           --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
           --url="${{ env.REDSHIFT_URL }}" dropAll 
 
       - name: Init Database
-        run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ env.TH_REDSHIFT_USER }}" --password="${{ env.TH_REDSHIFT_PASSWORD }}" --url="${{ env.REDSHIFT_URL }}" update
+        run: | 
+          liquibase --classpath="src/test/resources" \
+          --changeLogFile="harness.initScript.sql" \
+           --username="${{ env.TH_REDSHIFT_USER }}" \
+           --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
+           --url="${{ env.REDSHIFT_URL }}" update
 
   # integration-test:
   #   name: Test Harness for Redshift ${{ matrix.redshift }}
