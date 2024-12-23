@@ -47,13 +47,14 @@ jobs:
           echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/liquibase-keyring.gpg] https://repo.liquibase.com stable main' | sudo tee /etc/apt/sources.list.d/liquibase.list
           sudo apt-get update
           sudo apt-get install liquibase
-
+          
       # FIXME the redshift jar version should come from the pom.xml file
       - name: Download AWS Redshift driver
         run: wget https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
 
       - name: Add Redshift extension and driver to liquibase classpath
         run: |
+          mkdir -p /liquibase/lib
           cp redshift-jdbc42-2.1.0.14.jar /liquibase/lib/
           cp liquibase-redshift-*-SNAPSHOT.jar /liquibase/lib/
 
