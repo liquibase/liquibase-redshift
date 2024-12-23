@@ -40,6 +40,12 @@ jobs:
         with:
           name: liquibase-redshift-artifacts
     
+      - name: Extract Liquibase Redshift Artifacts version
+        run: |
+          version=$(ls liquibase-redshift*.pom | cut -d '-' -f3)
+          echo "Liquibase Redshift Artifacts version: $version"
+          echo "lb_redshift_jar=liquibase-redshift-$version-SNAPSHOT.jar" >> $GITHUB_ENV
+
       - name: Install liquibase
         run: |
           wget -O- https://repo.liquibase.com/liquibase.asc | gpg --dearmor > liquibase-keyring.gpg && \
@@ -55,8 +61,8 @@ jobs:
       - name: Add Redshift extension and driver to liquibase classpath
         run: |
           cp redshift-jdbc42-2.1.0.14.jar src/test/resources/
-          cp liquibase-redshift-*-SNAPSHOT.jar src/test/resources/
-
+          cp ${{ env.lb_redshift_jar }} src/test/resources/
+ 
       - name: Setup Python
         uses: actions/setup-python@v5.3.0
         with:
@@ -122,14 +128,14 @@ jobs:
       - name: Clean AWS Redshift Database
         run: |
           liquibase --username="${{ env.TH_REDSHIFT_USER }}" \
-          --classpath="src/test/resources" \
+          --classpath="src/test/resources/${{ env.lb_redshift_jar }}:src/test/resources/redshift-jdbc42-2.1.0.14.jar" \
           --driver=com.amazon.redshift.jdbc42.Driver \
           --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
           --url="${{ env.REDSHIFT_URL }}" dropAll 
 
       - name: Init Database
         run: | 
-          liquibase --classpath="src/test/resources" \
+          liquibase --classpath="src/test/resources/${{ env.lb_redshift_jar }}:src/test/resources/redshift-jdbc42-2.1.0.14.jar" \
           --changeLogFile="harness.initScript.sql" \
            --username="${{ env.TH_REDSHIFT_USER }}" \
            --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
