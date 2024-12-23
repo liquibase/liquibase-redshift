@@ -26,8 +26,8 @@ jobs:
     name: Clean and initialize database
     needs: build-test
     runs-on: ubuntu-latest
-    # container:
-    #   image: liquibase/liquibase:latest
+    container:
+      image: liquibase/liquibase:latest
     env:
       LPM_VERSION: 0.2.3
     strategy:
