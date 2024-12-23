@@ -95,35 +95,37 @@ jobs:
           echo "TH_REDSHIFT_PORT=5439" >> $GITHUB_ENV
           echo "TH_REDSHIFT_REGION=us-east-1" >> $GITHUB_ENV
 
+      - name: Setup Redshift Cluster
+        run: |  
           # Set up Redshift cluster in LocalStack
           echo "Creating Redshift cluster in LocalStack..."
           awslocal redshift create-cluster \
-            --cluster-identifier "$TH_REDSHIFT_CLUSTER" \
-            --db-name "$TH_REDSHIFT_DB" \
-            --master-username "$TH_REDSHIFT_USER" \
-            --master-user-password "$TH_REDSHIFT_PASSWORD" \
+            --cluster-identifier ${{ env.TH_REDSHIFT_CLUSTER }} \
+            --db-name ${{ env.TH_REDSHIFT_DB }} \
+            --master-username ${{ env.TH_REDSHIFT_USER }} \
+            --master-user-password ${{ env.TH_REDSHIFT_PASSWORD }} \
             --node-type dc2.large \
             --number-of-nodes 2
 
           # Fetch Redshift cluster endpoint
           echo "Fetching Redshift cluster endpoint..."
           REDSHIFT_ENDPOINT=$(awslocal redshift describe-clusters \
-            --cluster-identifier $TH_REDSHIFT_CLUSTER \
+            --cluster-identifier ${{ env.TH_REDSHIFT_CLUSTER }} \
             --query "Clusters[0].Endpoint.Address" \
             --output text)
 
           # Construct Redshift URL
-          REDSHIFT_URL="jdbc:redshift://${REDSHIFT_ENDPOINT}:${TH_REDSHIFT_PORT}/${TH_REDSHIFT_DB}"
+          REDSHIFT_URL="jdbc:redshift://${REDSHIFT_ENDPOINT}:${{ env.TH_REDSHIFT_PORT }}/${TH_REDSHIFT_DB}"
           echo "REDSHIFT_URL=${REDSHIFT_URL}" >> $GITHUB_ENV
 
           echo "Redshift cluster setup complete."
-          echo "Redshift URL: ${REDSHIFT_URL}"
+          echo "Redshift URL: $REDSHIFT_URL"
             
       - name: Clean AWS Redshift Database
-        run: liquibase --username="$TH_REDSHIFT_USER" --password="$TH_REDSHIFT_PASSWORD" --url="$REDSHIFT_URL" dropAll
+        run: liquibase --username="${{ env.TH_REDSHIFT_USER }}" --password="${{ env.TH_REDSHIFT_PASSWORD }}" --url="${{ env.REDSHIFT_URL }}" dropAll
 
       - name: Init Database
-        run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="$TH_REDSHIFT_USER" --password="$TH_REDSHIFT_PASSWORD" --url="$REDSHIFT_URL" update
+        run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ env.TH_REDSHIFT_USER }}" --password="${{ env.TH_REDSHIFT_PASSWORD }}" --url="${{ env.REDSHIFT_URL }}" update
 
   # integration-test:
   #   name: Test Harness for Redshift ${{ matrix.redshift }}
