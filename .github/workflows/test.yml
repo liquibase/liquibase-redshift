@@ -9,7 +9,6 @@ on:
       - synchronize
 
 jobs:
-
   authorize:
     environment: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'external' || 'internal' }}
     runs-on: ubuntu-latest
@@ -25,7 +24,7 @@ jobs:
 
   prepare-database:
     name: Clean and initialize database
-    # needs: build-test
+    needs: build-test
     runs-on: ubuntu-latest
     # container:
     #   image: liquibase/liquibase:latest
