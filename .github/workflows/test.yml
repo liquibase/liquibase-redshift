@@ -124,12 +124,6 @@ jobs:
 
           echo "Redshift cluster setup complete."
           echo "Redshift URL: $REDSHIFT_URL"
-
-      - name: Veirfy Redshift
-        run: |
-          awslocal redshift list-clusters
-
-          aws redshift describe-clusters --endpoint-url=${REDSHIFT_ENDPOINT}
           
       - name: Clean AWS Redshift Database
         run: |
