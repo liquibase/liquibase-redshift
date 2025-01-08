@@ -96,7 +96,7 @@ jobs:
           echo "TH_REDSHIFT_DB=test_db" >> $GITHUB_ENV
           echo "TH_REDSHIFT_USER=admin" >> $GITHUB_ENV
           echo "TH_REDSHIFT_PASSWORD=${{ secrets.TH_REDSHIFT_PASSWORD }}" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_PORT=5439" >> $GITHUB_ENV
+          echo "TH_REDSHIFT_PORT=4510" >> $GITHUB_ENV
           echo "TH_REDSHIFT_REGION=us-east-1" >> $GITHUB_ENV
 
       - name: Setup Redshift Cluster
@@ -127,6 +127,8 @@ jobs:
 
       - name: Veirfy Redshift
         run: |
+          awslocal redshift list-clusters
+
           aws redshift describe-clusters --endpoint-url=${REDSHIFT_ENDPOINT}
           
       - name: Clean AWS Redshift Database
