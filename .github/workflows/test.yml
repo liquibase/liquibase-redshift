@@ -124,10 +124,14 @@ jobs:
 
           echo "Redshift cluster setup complete."
           echo "Redshift URL: $REDSHIFT_URL"
-            
+
+      - name: Veirfy Redshift
+        run: |
+          aws redshift describe-clusters --endpoint-url=${REDSHIFT_ENDPOINT}
+          
       - name: Clean AWS Redshift Database
         run: |
-          liquibase --username="${{ env.TH_REDSHIFT_USER }}" \
+          liquibase --logLevel=DEBUG --username="${{ env.TH_REDSHIFT_USER }}" \
           --classpath="src/test/resources/${{ env.lb_redshift_jar }}:src/test/resources/redshift-jdbc42-2.1.0.14.jar" \
           --driver=com.amazon.redshift.jdbc42.Driver \
           --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
