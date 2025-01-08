@@ -131,7 +131,9 @@ jobs:
           --classpath="src/test/resources/${{ env.lb_redshift_jar }}:src/test/resources/redshift-jdbc42-2.1.0.14.jar" \
           --driver=com.amazon.redshift.jdbc42.Driver \
           --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
-          --url="${{ env.REDSHIFT_URL }}?ssl=false" dropAll 
+          --url="${{ env.REDSHIFT_URL }}?ssl=false" \
+          --hono-system-views=false --disable-database-locking=true \
+           dropAll 
 
       - name: Init Database
         run: | 
