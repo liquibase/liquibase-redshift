@@ -145,7 +145,7 @@ jobs:
 
   destroy-ephemeral-cloud-infra:
     if: always()
-    needs: [ deploy-ephemeral-cloud-infra, prepare-database ]
+    needs: [ deploy-ephemeral-cloud-infra, prepare-database, integration-test ]
     uses: liquibase/build-logic/.github/workflows/ephemeral-cloud-infra.yml@main
     secrets: inherit
     with:
