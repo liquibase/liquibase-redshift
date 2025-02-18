@@ -22,9 +22,16 @@ jobs:
     with:
       extraMavenArgs: -Dtest="RedshiftDatabaseTest"
 
+  deploy-ephemeral-cloud-infra:
+    uses: liquibase/build-logic/.github/workflows/ephemeral-cloud-infra.yml@main
+    secrets: inherit
+    with:
+        deploy: true
+        aws_redshift: true
+
   prepare-database:
     name: Clean and initialize database
-    needs: build-test
+    needs: [ build-test , deploy-ephemeral-cloud-infra ]
     runs-on: ubuntu-latest
     env:
       LPM_VERSION: 0.2.3
@@ -67,79 +74,44 @@ jobs:
         uses: actions/setup-python@v5.3.0
         with:
           python-version: '3.11.5'
-           
-      - name: Set up Docker Buildx
-        uses: docker/setup-docker-action@v4
 
-      - name: Start & Configure LocalStack
-        env:
-          LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
-          TH_REDSHIFT_PASSWORD: ${{ secrets.TH_REDSHIFT_PASSWORD }}
-        run: |
-          # Install LocalStack and supporting tools
-          pip install localstack awscli-local
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+            role-to-assume: ${{ secrets.AWS_DEV_GITHUB_OIDC_ROLE_ARN_BUILD_LOGIC }}
+            aws-region: us-east-1
 
-          # Pull the required LocalStack Pro image
-          docker pull localstack/localstack-pro
-
-          # Start LocalStack with custom Redshift support
-          DOCKER_FLAGS='-e LOCALSTACK_API_KEY=${{ secrets.LOCALSTACK_API_KEY }}' localstack start -d
-
-          # Wait for LocalStack to fully start
-          echo "Waiting for LocalStack startup..."
-          localstack wait -t 30
-          echo "Startup complete"
-
-          # Configure environment variables for Redshift
-          echo "TH_REDSHIFT_CLUSTER=test-redshift-cluster" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_DB=test_db" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_USER=admin" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_PASSWORD=${{ secrets.TH_REDSHIFT_PASSWORD }}" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_PORT=4510" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_REGION=us-east-1" >> $GITHUB_ENV
-
-      - name: Setup Redshift Cluster
-        run: |  
-          # Set up Redshift cluster in LocalStack
-          echo "Creating Redshift cluster in LocalStack..."
-          awslocal redshift create-cluster \
-            --cluster-identifier ${{ env.TH_REDSHIFT_CLUSTER }} \
-            --db-name ${{ env.TH_REDSHIFT_DB }} \
-            --master-username ${{ env.TH_REDSHIFT_USER }} \
-            --master-user-password ${{ env.TH_REDSHIFT_PASSWORD }} \
-            --node-type dc2.large \
-            --number-of-nodes 2
-
-          # Fetch Redshift cluster endpoint
-          echo "Fetching Redshift cluster endpoint..."
-          REDSHIFT_ENDPOINT=$(awslocal redshift describe-clusters \
-            --cluster-identifier ${{ env.TH_REDSHIFT_CLUSTER }} \
-            --query "Clusters[0].Endpoint.Address" \
-            --output text)
-
-          # Construct Redshift URL
-          REDSHIFT_URL="jdbc:redshift://${REDSHIFT_ENDPOINT}:${{ env.TH_REDSHIFT_PORT }}/${TH_REDSHIFT_DB}"
-          echo "REDSHIFT_URL=${REDSHIFT_URL}" >> $GITHUB_ENV
-
-          echo "Redshift cluster setup complete."
-          echo "Redshift URL: $REDSHIFT_URL"
-          
+      - name: Get TH_REDSHIFT_URL secret
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            REDSHIFT_URL, /testautomation/db_details/aws_redshift_jdbc_${{ needs.deploy-ephemeral-cloud-infra.outputs.resources_id }}
+      
       - name: Clean AWS Redshift Database
         run: |
-          liquibase --logLevel=DEBUG --username="${{ env.TH_REDSHIFT_USER }}" \
+          liquibase --logLevel=DEBUG --username="${{ env.TH_DB_ADMIN }}" \
           --classpath="src/test/resources/${{ env.lb_redshift_jar }}:src/test/resources/redshift-jdbc42-2.1.0.14.jar" \
           --driver=com.amazon.redshift.jdbc42.Driver \
-          --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
+          --password="${{ env.TH_DB_PASSWD }}" \
           --url="${{ env.REDSHIFT_URL }}?ssl=false" dropAll 
 
       - name: Init Database
         run: | 
           liquibase --classpath="src/test/resources/${{ env.lb_redshift_jar }}:src/test/resources/redshift-jdbc42-2.1.0.14.jar" \
           --changeLogFile="harness.initScript.sql" \
-           --username="${{ env.TH_REDSHIFT_USER }}" \
-           --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
+           --username="${{ env.TH_DB_ADMIN }}" \
+           --password="${{ env.TH_DB_PASSWD }}" \
            --url="${{ env.REDSHIFT_URL }}?ssl=false" update
+
+  destroy-ephemeral-cloud-infra:
+    if: always()
+    needs: [ deploy-ephemeral-cloud-infra, prepare-database ]
+    uses: liquibase/build-logic/.github/workflows/ephemeral-cloud-infra.yml@main
+    secrets: inherit
+    with:
+        destroy: true
+        stack_id: ${{ needs.deploy-ephemeral-cloud-infra.outputs.stack_id }}
+        aws_redshift: true
 
   # integration-test:
   #   name: Test Harness for Redshift ${{ matrix.redshift }}
