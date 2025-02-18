@@ -33,6 +33,9 @@ jobs:
     name: Clean and initialize database
     needs: [ build, deploy-ephemeral-cloud-infra ]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     container:
       image: liquibase/liquibase:latest
 
@@ -79,6 +82,9 @@ jobs:
     name: Test Harness for Redshift ${{ matrix.redshift }}
     needs: [ prepare-database, deploy-ephemeral-cloud-infra ]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     strategy:
       fail-fast: false
