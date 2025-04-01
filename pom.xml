@@ -36,6 +36,24 @@
                 <scope>test</scope>
                 <version>4.13.2</version>
             </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>5.10.3</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-suite</artifactId>
+                <version>1.11.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.vintage</groupId>
+                <artifactId>junit-vintage-engine</artifactId>
+                <version>5.10.3</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -49,6 +67,38 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-test-harness</artifactId>
             <version>1.0.10</version>
+            <scope>test</scope>
+            <exclusions>
+                <!-- Exclude system-path dependencies to avoid Maven errors -->
+                <exclusion>
+                    <groupId>com.ibm.db2</groupId>
+                    <artifactId>db2-z-licence</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sybase.jdbc4.jdbc.sybdriver</groupId>
+                    <artifactId>sybase</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.edb</groupId>
+                    <artifactId>edb-jdbc18</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <!-- JUnit 5 dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -93,15 +143,22 @@
             </plugin>
              <plugin>
                  <artifactId>maven-surefire-plugin</artifactId>
+                 <version>3.5.2</version>
                  <dependencies>
                      <dependency>
                          <groupId>org.apache.maven.surefire</groupId>
-                         <artifactId>surefire-junit4</artifactId>
+                         <artifactId>surefire-junit-platform</artifactId>
                          <version>3.5.2</version>
                      </dependency>
                  </dependencies>
                  <configuration>
                      <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                     <includes>
+                         <include>**/*Test</include>
+                         <include>**/*Tests</include>
+                         <include>**/*Spec</include>
+                         <include>**/*Suite</include>
+                     </includes>
                  </configuration>
              </plugin>
             <!-- This will be cleaned after the next liquibase parent pom release-->
