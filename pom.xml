@@ -74,6 +74,7 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
