@@ -92,7 +92,7 @@ jobs:
         redshift: [ "" ]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -102,7 +102,7 @@ jobs:
           cache: 'maven'
 
       - name: Build Cache
-        uses: actions/cache@v3.0.5
+        uses: actions/cache@v3
         with:
           key: build-${{ github.run_number }}-${{ github.run_attempt }}
           path: |
