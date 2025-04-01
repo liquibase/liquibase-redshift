@@ -25,7 +25,7 @@ jobs:
 
   prepare-database:
     name: Clean and initialize database
-    needs: build
+    needs: build-test
     runs-on: ubuntu-latest
     container:
       image: liquibase/liquibase:latest
