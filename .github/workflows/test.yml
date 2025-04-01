@@ -9,24 +9,33 @@ on:
       - synchronize
 
 jobs:
-
   authorize:
     environment: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'external' || 'internal' }}
     runs-on: ubuntu-latest
     steps:
       - run: true
 
-  build-test:
+  build:
     needs: authorize
     uses: liquibase/build-logic/.github/workflows/os-extension-test.yml@main
     secrets: inherit
     with:
       extraMavenArgs: -Dtest="RedshiftDatabaseTest"
 
+  deploy-ephemeral-cloud-infra:
+    uses: liquibase/build-logic/.github/workflows/ephemeral-cloud-infra.yml@main
+    secrets: inherit
+    with:
+        deploy: true
+        aws_redshift: true
+
   prepare-database:
     name: Clean and initialize database
-    needs: build-test
+    needs: [ build, deploy-ephemeral-cloud-infra ]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     container:
       image: liquibase/liquibase:latest
 
@@ -34,7 +43,7 @@ jobs:
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Download Artifacts
         uses: actions/download-artifact@v4
@@ -50,16 +59,32 @@ jobs:
           cp redshift-jdbc42-2.1.0.14.jar /liquibase/lib/
           cp liquibase-redshift-*-SNAPSHOT.jar /liquibase/lib/
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+            role-to-assume: ${{ secrets.AWS_DEV_GITHUB_OIDC_ROLE_ARN_BUILD_LOGIC }}
+            aws-region: us-east-1
+
+      - name: Get TH_REDSHIFT_URL secret
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            TH_REDSHIFTURL, /testautomation/db_details/aws_redshift_jdbc_${{ needs.deploy-ephemeral-cloud-infra.outputs.resources_id }}
+
       - name: Clean AWS Redshift Database
-        run: liquibase --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ secrets.TH_REDSHIFTURL }}" dropAll
+        run: liquibase --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ env.TH_REDSHIFTURL }}" dropAll
 
       - name: Init Database
-        run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ secrets.TH_REDSHIFTURL }}" update
+        run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ env.TH_REDSHIFTURL }}" update
+
 
   integration-test:
     name: Test Harness for Redshift ${{ matrix.redshift }}
-    needs: prepare-database
+    needs: [ prepare-database, deploy-ephemeral-cloud-infra ]
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     strategy:
       fail-fast: false
@@ -84,14 +109,27 @@ jobs:
             **/target/**
             ~/.m2/repository/org/liquibase/
 
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+            role-to-assume: ${{ secrets.AWS_DEV_GITHUB_OIDC_ROLE_ARN_BUILD_LOGIC }}
+            aws-region: us-east-1
+
+      - name: Get TH_REDSHIFT_URL secret
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: |
+            TH_REDSHIFTURL, /testautomation/db_details/aws_redshift_jdbc_${{ needs.deploy-ephemeral-cloud-infra.outputs.resources_id }}
+    
+
       - name: Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} test
 
       - name: Foundational Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} test
 
       - name: Advanced Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
+        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} test
 
       - name: Archive Redshift Test Results
         if: ${{ always() }}
@@ -101,6 +139,17 @@ jobs:
           path: build/spock-reports
 
   dependabot-automerge:
-    needs: build-test
+    needs: build
     uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@main
     secrets: inherit
+
+  destroy-ephemeral-cloud-infra:
+    if: always()
+    needs: [ deploy-ephemeral-cloud-infra, prepare-database, integration-test ]
+    uses: liquibase/build-logic/.github/workflows/ephemeral-cloud-infra.yml@main
+    secrets: inherit
+    with:
+        destroy: true
+        stack_id: ${{ needs.deploy-ephemeral-cloud-infra.outputs.stack_id }}
+        aws_redshift: true
+
