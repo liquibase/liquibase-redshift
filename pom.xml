@@ -50,6 +50,20 @@
             <artifactId>liquibase-test-harness</artifactId>
             <version>1.0.10</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.ibm.db2</groupId>
+                    <artifactId>db2-z-licence</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sybase.jdbc4.jdbc.sybdriver</groupId>
+                    <artifactId>sybase</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.edb</groupId>
+                    <artifactId>edb-jdbc18</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -102,6 +116,11 @@
                  </dependencies>
                  <configuration>
                      <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                     <!-- Skip LiquibaseHarnessSuiteIT during unit test phase -->
+                     <excludes>
+                         <exclude>**/LiquibaseHarnessSuiteIT.java</exclude>
+                         <exclude>**/LiquibaseHarnessSuiteIT.groovy</exclude>
+                     </excludes>
                  </configuration>
              </plugin>
             <!-- This will be cleaned after the next liquibase parent pom release-->
@@ -112,8 +131,18 @@
                     <includes>
                         <include>**/IT*.java</include>
                         <include>**/*IT.java</include>
+                        <include>**/IT*.groovy</include>
+                        <include>**/*IT.groovy</include>
                     </includes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
          </plugins>
         <!-- Need to keep final name in sync with the final name of the maven-assembly-plugin configuration-->
