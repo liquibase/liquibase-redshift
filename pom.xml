@@ -12,7 +12,7 @@
     <artifactId>liquibase-redshift</artifactId>
     <version>4.32.0-SNAPSHOT</version>
 
-    <name>Liquibase Extension Amazon Redshift support</name>
+    <n>Liquibase Extension Amazon Redshift support</n>
     <description>Add this Liquibase extension to your project to support Amazon Redshift</description>
     <url>https://github.com/liquibase/liquibase-redshift</url>
 
@@ -73,36 +73,6 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.spockframework</groupId>
-            <artifactId>spock-core</artifactId>
-            <version>2.3-groovy-4.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>4.0.20</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.groovy</groupId>
-            <artifactId>groovy-json</artifactId>
-            <version>4.0.20</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.groovy</groupId>
-            <artifactId>groovy-sql</artifactId>
-            <version>4.0.20</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.groovy</groupId>
-            <artifactId>groovy-xml</artifactId>
-            <version>4.0.20</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -144,34 +114,10 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.2</version>
                 <configuration>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                    <useFile>false</useFile>
-                    <includes>
-                        <include>**/*Test.java</include>
-                        <include>**/*Test.groovy</include>
-                        <include>**/*Spec.java</include>
-                        <include>**/*Spec.groovy</include>
-                    </includes>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.gmavenplus</groupId>
-                <artifactId>gmavenplus-plugin</artifactId>
-                <version>3.0.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>addSources</goal>
-                            <goal>addTestSources</goal>
-                            <goal>compile</goal>
-                            <goal>compileTests</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
