@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-parent-pom</artifactId>
-        <version>0.5.8</version> <!-- Replace with the desired version -->
+        <version>0.5.8</version>
     </parent>
 
     <groupId>org.liquibase.ext</groupId>
@@ -27,10 +27,9 @@
     <scm>
         <connection>scm:git:${project.scm.url}</connection>
         <developerConnection>scm:git:${project.scm.url}</developerConnection>
-	<url>https://github.com/liquibase/liquibase-redshift.git</url>
-	<tag>HEAD</tag>
+        <url>https://github.com/liquibase/liquibase-redshift.git</url>
+        <tag>HEAD</tag>
     </scm>
-
 
     <dependencies>
         <dependency>
@@ -73,20 +72,12 @@
             <artifactId>liquibase-test-harness</artifactId>
             <version>1.0.10</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.ibm.db2</groupId>
-                    <artifactId>db2-z-licence</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sybase.jdbc4.jdbc.sybdriver</groupId>
-                    <artifactId>sybase</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.edb</groupId>
-                    <artifactId>edb-jdbc18</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -128,25 +119,12 @@
                     </fileSets>
                 </configuration>
             </plugin>
-             <plugin>
-                 <artifactId>maven-surefire-plugin</artifactId>
-                 <dependencies>
-                     <dependency>
-                         <groupId>org.apache.maven.surefire</groupId>
-                         <artifactId>surefire-junit4</artifactId>
-                         <version>3.5.2</version>
-                     </dependency>
-                 </dependencies>
-                 <configuration>
-                     <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                     <includes>
-                         <include>**/RedshiftDatabaseTest.java</include>
-                     </includes>
-                 </configuration>
-             </plugin>
-         </plugins>
-        <!-- Need to keep final name in sync with the final name of the maven-assembly-plugin configuration-->
-        <!-- in order to only generate single jar with dependencies-->
-
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>
