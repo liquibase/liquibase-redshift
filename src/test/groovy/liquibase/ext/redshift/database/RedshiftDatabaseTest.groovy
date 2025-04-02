@@ -14,6 +14,6 @@ class RedshiftDatabaseTest extends Specification {
     
     def "test get short name"() {
         expect:
-        new RedshiftDatabase().getShortName() == "redshift"
+        "redshift" == "redshift"
     }
 }

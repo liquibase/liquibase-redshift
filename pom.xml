@@ -79,6 +79,30 @@
             <version>2.3-groovy-4.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.20</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-json</artifactId>
+            <version>4.0.20</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-sql</artifactId>
+            <version>4.0.20</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>4.0.20</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -120,9 +144,18 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.2</version>
                 <configuration>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <useFile>false</useFile>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Test.groovy</include>
+                        <include>**/*Spec.java</include>
+                        <include>**/*Spec.groovy</include>
+                    </includes>
                 </configuration>
             </plugin>
             <plugin>
@@ -132,6 +165,8 @@
                 <executions>
                     <execution>
                         <goals>
+                            <goal>addSources</goal>
+                            <goal>addTestSources</goal>
                             <goal>compile</goal>
                             <goal>compileTests</goal>
                         </goals>
