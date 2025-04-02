@@ -12,16 +12,13 @@
     <artifactId>liquibase-redshift</artifactId>
     <version>4.32.0-SNAPSHOT</version>
 
-    <n>Liquibase Extension Amazon Redshift support</n>
+    <name>Liquibase Extension Amazon Redshift support</name>
     <description>Add this Liquibase extension to your project to support Amazon Redshift</description>
     <url>https://github.com/liquibase/liquibase-redshift</url>
 
     <properties>
         <liquibase.version>4.31.1</liquibase.version>
         <jacoco.fileset.directory>target</jacoco.fileset.directory>
-        <junit.version>5.11.4</junit.version>
-        <junit-platform.version>1.11.4</junit-platform.version>
-        <sonar.tests>src/test/groovy</sonar.tests>
     </properties>
 
     <scm>
@@ -31,6 +28,17 @@
         <tag>HEAD</tag>
     </scm>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <scope>test</scope>
+                <version>4.13.2</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>com.amazon.redshift</groupId>
@@ -38,39 +46,9 @@
             <version>2.1.0.32</version>
         </dependency>
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-suite</artifactId>
-            <version>${junit-platform.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>${junit-platform.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-test-harness</artifactId>
+            <version>1.0.10</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -96,7 +74,6 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
-
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -115,6 +92,13 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
+                 <dependencies>
+                     <dependency>
+                         <groupId>org.apache.maven.surefire</groupId>
+                         <artifactId>surefire-junit4</artifactId>
+                         <version>3.5.2</version>
+                     </dependency>
+                 </dependencies>
                 <configuration>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
