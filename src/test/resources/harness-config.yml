@@ -3,7 +3,7 @@ context: testContext
 
 databasesUnderTest:
   - name: lbcat
-    url: jdbc:redshift://host:port/lbcat
+    url: jdbc:redshift://default-cluster-14256527677.cxc8obn22oaz.us-east-1.redshift.amazonaws.com:5439/lbcat
     username: USERNAME_PLACEHOLDER
     password: PASSWORD_PLACEHOLDER
     dbSchema: public
