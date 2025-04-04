@@ -1,10 +1,10 @@
-inputFormat: xml,yaml,json,sql
+inputFormat: xml
 context: testContext
 
 databasesUnderTest:
-  - name: redshift
-    prefix: aws
+  - name: lbcat
+    version: latest
+    url: jdbc:redshift://default-cluster-14256527677.cxc8obn22oaz.us-east-1.redshift.amazonaws.com:5439/lbcat
+    username: lbuser
+    password: PASSWORD_PLACEHOLDER
     dbSchema: public
-    url: DBENDPOINT
-    username: USERNAME
-    password: PASSWORD
