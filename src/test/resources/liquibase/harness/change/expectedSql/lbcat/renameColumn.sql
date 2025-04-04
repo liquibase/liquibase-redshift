@@ -1,0 +1,1 @@
+../redshift/renameColumn.sql
