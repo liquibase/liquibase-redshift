@@ -1,0 +1,1 @@
+../redshift/enableCheckConstraint.sql

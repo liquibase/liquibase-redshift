@@ -1,0 +1,1 @@
+../redshift/addDefaultValueBoolean.sql

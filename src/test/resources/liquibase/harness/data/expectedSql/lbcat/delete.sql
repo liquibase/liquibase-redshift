@@ -1,0 +1,1 @@
+../redshift/delete.sql

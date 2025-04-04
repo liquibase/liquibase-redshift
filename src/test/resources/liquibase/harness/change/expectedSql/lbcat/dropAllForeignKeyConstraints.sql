@@ -1,0 +1,1 @@
+../redshift/dropAllForeignKeyConstraints.sql

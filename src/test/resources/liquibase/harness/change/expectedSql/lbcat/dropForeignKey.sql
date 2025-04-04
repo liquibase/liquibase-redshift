@@ -1,0 +1,1 @@
+../redshift/dropForeignKey.sql
