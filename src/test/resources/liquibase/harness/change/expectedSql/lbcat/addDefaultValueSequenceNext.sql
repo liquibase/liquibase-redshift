@@ -1,1 +1,0 @@
-../redshift/addDefaultValueSequenceNext.sql
