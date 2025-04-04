@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet id="1" author="kristyl">
+        <addColumn tableName="authors">
+            <column name="varcharColumn" type="varchar(25)" value="INITIAL_VALUE"/>
+            <column name="intColumn" type="int" valueNumeric="5"/>
+            <column name="dateColumn" type="date" valueDate="2020-09-21"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

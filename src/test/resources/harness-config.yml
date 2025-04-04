@@ -1,9 +1,10 @@
-inputFormat: xml
+inputFormat: xml,yaml,json,sql
 context: testContext
 
 databasesUnderTest:
   - name: redshift
     prefix: aws
+    dbSchema: public
     url: DBENDPOINT
     username: USERNAME
     password: PASSWORD
