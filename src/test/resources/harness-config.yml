@@ -3,7 +3,6 @@ context: testContext
 
 databasesUnderTest:
   - name: lbcat
-    version: latest
     url: jdbc:redshift://host:port/lbcat
     username: USERNAME_PLACEHOLDER
     password: PASSWORD_PLACEHOLDER
