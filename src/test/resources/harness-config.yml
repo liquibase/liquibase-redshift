@@ -1,9 +1,16 @@
+# test-harness config for redshift
 inputFormat: xml
 context: testContext
 
+# Database configuration
+# In CI/CD, these values are overridden by -DdbName=lbcat -DdbUsername and -DdbPassword and -DdbUrl parameters
 databasesUnderTest:
   - name: lbcat
-    url: jdbc:redshift://default-cluster-14256527677.cxc8obn22oaz.us-east-1.redshift.amazonaws.com:5439/lbcat
-    username: lbuser
+    # This will be used to locate the correct test files in directories named 'redshift'
+    type: redshift
+    # The connection URL will be provided by -DdbUrl in the command line
+    url: jdbc:redshift://host:port/lbcat
+    # Credentials provided via -DdbUsername and -DdbPassword
+    username: USERNAME_PLACEHOLDER
     password: PASSWORD_PLACEHOLDER
     dbSchema: public
