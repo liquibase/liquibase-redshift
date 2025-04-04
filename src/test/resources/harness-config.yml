@@ -3,7 +3,6 @@ context: testContext
 
 databasesUnderTest:
   - name: lbcat
-    databaseType: redshift
     url: DBENDPOINT
     username: USERNAME
     password: PASSWORD
