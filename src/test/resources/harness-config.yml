@@ -3,7 +3,6 @@ context: testContext
 
 databasesUnderTest:
   - name: lbcat
-    version: latest
     url: jdbc:redshift://default-cluster-14256527677.cxc8obn22oaz.us-east-1.redshift.amazonaws.com:5439/lbcat
     username: lbuser
     password: PASSWORD_PLACEHOLDER
