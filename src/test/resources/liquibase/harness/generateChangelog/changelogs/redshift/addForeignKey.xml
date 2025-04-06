@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet id="1" author="liquibase">
+        <createTable tableName="fk_parent">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+        </createTable>
+        <createTable tableName="fk_child">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="parent_id" type="int"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="liquibase">
+        <addForeignKeyConstraint 
+            baseTableName="fk_child" 
+            baseColumnNames="parent_id" 
+            constraintName="fk_child_parent" 
+            referencedTableName="fk_parent" 
+            referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

@@ -44,10 +44,21 @@
             <artifactId>redshift-jdbc42</artifactId>
             <version>2.1.0.32</version>
         </dependency>
+        <!-- AWS SDK dependencies needed by the Redshift JDBC driver -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-bundle</artifactId>
+            <version>1.12.656</version>
+        </dependency>
+        <!-- JSON libraries needed for test harness -->
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -71,13 +82,12 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-test-harness</artifactId>
-            <version>1.0.10</version>
+            <version>1.0.11</version>
             <scope>test</scope>
         </dependency>
         <dependency>

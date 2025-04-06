@@ -4,7 +4,7 @@
       "liquibase.structure.core.Table": [
         {
           "table": {
-            "name": "person"
+            "name": "test_table"
           }
         }
       ]

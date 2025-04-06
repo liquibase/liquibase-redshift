@@ -1,0 +1,3 @@
+-- INVALID TEST
+-- Redshift doesn't support CREATE INDEX on Redshift tables.
+-- ERROR: SQL command "CREATE INDEX idx_table_with_index_name ON public.table_with_index(name)" not supported on Redshift tables.

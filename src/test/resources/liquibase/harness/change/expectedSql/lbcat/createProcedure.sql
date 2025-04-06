@@ -1,1 +1,0 @@
-../redshift/createProcedure.sql

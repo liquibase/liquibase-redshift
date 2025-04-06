@@ -1,0 +1,1 @@
+CREATE TABLE "table_with_check" ("id" INTEGER NOT NULL, "amount" INTEGER, CONSTRAINT "table_with_check_pkey" PRIMARY KEY ("id"));

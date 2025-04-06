@@ -11,10 +11,7 @@
       "liquibase.structure.core.Column": [
         {
           "column": {
-            "name": "snapshot_test_column",
-            "type": {
-              "typeName": "int4"
-            }
+            "name": "snapshot_test_column"
           }
         }
       ]

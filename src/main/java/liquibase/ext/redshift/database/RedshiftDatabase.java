@@ -238,5 +238,14 @@ public class RedshiftDatabase extends PostgresDatabase {
     protected SqlStatement getConnectionSchemaNameCallStatement() {
         return new RawSqlStatement("select current_schema()");
     }
+    
+    @Override
+    public boolean supportsDDLInTransaction() {
+        return false;
+    }
 
+    @Override
+    public boolean supportsSequences() {
+        return false;
+    }
 }
