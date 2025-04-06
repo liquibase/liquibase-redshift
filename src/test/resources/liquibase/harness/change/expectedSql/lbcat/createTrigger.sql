@@ -1,1 +1,0 @@
-../redshift/createTrigger.sql

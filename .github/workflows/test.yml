@@ -77,7 +77,11 @@ jobs:
           liquibase --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ env.TH_REDSHIFTURL }}" dropAll
 
       - name: Init Database
-        run: liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ env.TH_REDSHIFTURL }}" update
+        run: |
+          # Create modified URL with autosave parameter
+          MODIFIED_URL="${{ env.TH_REDSHIFTURL }}?autosave=always&tcpKeepAlive=true"
+          echo "Using modified URL with autosave parameter for database initialization"
+          liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${MODIFIED_URL}" update
 
   integration-test:
     name: Test Harness for Redshift ${{ matrix.redshift }}
@@ -122,14 +126,64 @@ jobs:
           secret-ids: |
             TH_REDSHIFTURL, /testautomation/db_details/aws_redshift_jdbc_${{ needs.deploy-ephemeral-cloud-infra.outputs.resources_id }}
 
+      - name: Create Test Connection Script
+        run: |
+          cat > TestConnection.java << EOF
+          import java.sql.Connection;
+          import java.sql.DriverManager;
+          import java.sql.SQLException;
+          
+          public class TestConnection {
+              public static void main(String[] args) {
+                  String url = args[0];
+                  String username = args[1];
+                  String password = args[2];
+                  
+                  System.out.println("Testing connection to: " + url);
+                  System.out.println("Using username: " + username);
+                  
+                  try {
+                      // Force loading the Redshift JDBC driver
+                      try {
+                          Class.forName("com.amazon.redshift.jdbc42.Driver");
+                          System.out.println("Redshift JDBC driver loaded successfully");
+                      } catch (ClassNotFoundException e) {
+                          System.out.println("WARNING: Redshift JDBC driver not found: " + e.getMessage());
+                      }
+                      
+                      Connection conn = DriverManager.getConnection(url, username, password);
+                      System.out.println("CONNECTION SUCCESSFUL!");
+                      conn.close();
+                  } catch (SQLException e) {
+                      System.out.println("CONNECTION FAILED!");
+                      System.out.println("Error: " + e.getMessage());
+                      System.out.println("SQLState: " + e.getSQLState());
+                      System.out.println("Error Code: " + e.getErrorCode());
+                  }
+              }
+          }
+          EOF
+          
+      - name: Download and Set Up Redshift JDBC Driver
+        run: |
+          # Download driver to a known location
+          wget -O redshift-jdbc42.jar https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
+          echo "Downloaded Redshift JDBC driver"
+          
+      - name: Compile and Run Connection Test
+        run: |
+          javac TestConnection.java
+          # Add the Redshift JDBC driver to the classpath explicitly
+          java -cp .:./redshift-jdbc42.jar TestConnection "${{ env.TH_REDSHIFTURL }}" "${{ secrets.TH_DB_ADMIN }}" "${{ secrets.TH_DB_PASSWD }}" || echo "Connection test exited with error but continuing workflow"
+          
       - name: Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=lbcat -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} test
+        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} -Dliquibase.ext.redshift.force=true -Dliquibase.logLevel=DEBUG -Dliquibase.autoCommit=true test
 
       - name: Foundational Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=lbcat -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} test
+        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} -Dliquibase.ext.redshift.force=true -Dliquibase.logLevel=DEBUG -Dliquibase.autoCommit=true test
 
       - name: Advanced Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=lbcat -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} test
+        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} -Dliquibase.ext.redshift.force=true -Dliquibase.logLevel=DEBUG -Dliquibase.autoCommit=true test
 
       - name: Archive Redshift Test Results
         if: ${{ always() }}

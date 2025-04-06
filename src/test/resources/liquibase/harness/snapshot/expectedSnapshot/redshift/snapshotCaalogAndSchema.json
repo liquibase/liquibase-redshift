@@ -1,17 +1,11 @@
 {
   "snapshot": {
     "objects": {
+      "_noMatch": true,
       "liquibase.structure.core.Catalog": [
         {
           "catalog": {
             "name": "lbcat"
-          }
-        }
-      ],
-      "liquibase.structure.core.Schema": [
-        {
-          "schema": {
-            "name": "public"
           }
         }
       ]

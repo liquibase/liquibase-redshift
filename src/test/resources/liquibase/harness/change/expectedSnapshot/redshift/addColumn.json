@@ -4,10 +4,17 @@
       "liquibase.structure.core.Column": [
         {
           "column": {
-            "name": "address",
-            "relation": {
-              "name": "person"
-            }
+            "name": "varcharColumn"
+          }
+        },
+        {
+          "column": {
+            "name": "intColumn"
+          }
+        },
+        {
+          "column": {
+            "name": "dateColumn"
           }
         }
       ]

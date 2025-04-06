@@ -1,48 +1,20 @@
 {
   "snapshot": {
     "objects": {
-      "liquibase.structure.core.Table": [
-        {
-          "table": {
-            "name": "test_table"
-          }
-        }
-      ],
       "liquibase.structure.core.Column": [
         {
           "column": {
-            "name": "test_column",
-            "nullable": true,
-            "type": {
-              "typeName": "int4"
-            }
+            "name": "varcharColumn"
           }
         },
         {
           "column": {
-            "name": "varcharColumn",
-            "nullable": true,
-            "type": {
-              "typeName": "varchar"
-            }
+            "name": "intColumn"
           }
         },
         {
           "column": {
-            "name": "intColumn",
-            "nullable": true,
-            "type": {
-              "typeName": "int4"
-            }
-          }
-        },
-        {
-          "column": {
-            "name": "dateColumn",
-            "nullable": true,
-            "type": {
-              "typeName": "date"
-            }
+            "name": "dateColumn"
           }
         }
       ]

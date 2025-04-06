@@ -1,12 +1,12 @@
 package liquibase.ext.redshift
 
-import liquibase.harness.BaseHarnessSuite
+import liquibase.harness.AdvancedHarnessSuite
 import liquibase.database.DatabaseFactory
 import liquibase.ext.redshift.database.RedshiftDatabase
 import org.junit.BeforeClass
 
-class LiquibaseHarnessSuiteIT extends BaseHarnessSuite {
-    
+class LiquibaseHarnessAdvancedSuiteTest extends AdvancedHarnessSuite {
+
     @BeforeClass
     static void setupRedshiftTests() {
         // Register Redshift database implementation with highest priority

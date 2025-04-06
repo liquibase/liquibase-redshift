@@ -2,7 +2,7 @@ inputFormat: xml
 context: testContext
 
 databasesUnderTest:
-  - name: lbcat
-    url: DBENDPOINT
-    username: USERNAME
-    password: PASSWORD
+  - name: redshift
+    url: DBURL
+    username: DBUSERNAME
+    password: DBPASSWORD

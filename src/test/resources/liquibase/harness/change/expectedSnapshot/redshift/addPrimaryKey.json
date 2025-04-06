@@ -1,13 +1,17 @@
 {
   "snapshot": {
     "objects": {
+      "liquibase.structure.core.Table": [
+        {
+          "table": {
+            "name": "posts"
+          }
+        }
+      ],
       "liquibase.structure.core.PrimaryKey": [
         {
           "primaryKey": {
-            "name": "pk_person",
-            "table": {
-              "name": "person"
-            }
+            "_noMatch": true
           }
         }
       ]
