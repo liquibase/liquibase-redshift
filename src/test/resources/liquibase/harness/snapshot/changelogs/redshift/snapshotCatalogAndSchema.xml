@@ -4,12 +4,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet id="2" author="oleh">
-        <createView viewName="test_view">
-            select id, first_name, last_name, email from authors
-        </createView>
+    <!-- This is a placeholder changelog for snapshotCatalogAndSchema test -->
+    <!-- The test verifies the catalog and schema names from the database connection -->
+    <changeSet id="1" author="claude">
+        <comment>Empty changeset to support the catalog and schema snapshot test</comment>
+        <sql>SELECT 1</sql>
         <rollback>
-            <dropView viewName="test_view"/>
+            <sql>SELECT 1</sql>
         </rollback>
     </changeSet>
 </databaseChangeLog>

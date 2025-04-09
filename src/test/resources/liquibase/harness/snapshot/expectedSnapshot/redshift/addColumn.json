@@ -1,20 +1,22 @@
 {
   "snapshot": {
     "objects": {
+      "liquibase.structure.core.Table": [
+        {
+          "table": {
+            "name": "test_table"
+          }
+        }
+      ],
       "liquibase.structure.core.Column": [
         {
           "column": {
-            "name": "varcharColumn"
+            "name": "id"
           }
         },
         {
           "column": {
-            "name": "intColumn"
-          }
-        },
-        {
-          "column": {
-            "name": "dateColumn"
+            "name": "new_column"
           }
         }
       ]

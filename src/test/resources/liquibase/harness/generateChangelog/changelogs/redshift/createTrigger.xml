@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
-    <!-- INVALID TEST: Per AWS Redshift - CREATE TRIGGER is not supported -->
-    <!-- https://docs.aws.amazon.com/redshift/latest/dg/c_unsupported-postgresql-features.html -->
-</databaseChangeLog>

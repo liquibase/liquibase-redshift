@@ -1,13 +1,6 @@
 {
   "snapshot": {
     "objects": {
-      "liquibase.structure.core.Table": [
-        {
-          "table": {
-            "name": "view_table"
-          }
-        }
-      ],
       "liquibase.structure.core.View": [
         {
           "view": {

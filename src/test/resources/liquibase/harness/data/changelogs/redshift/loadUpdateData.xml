@@ -4,6 +4,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+<!-- This file is specific to Redshift because:
+1. Redshift has specific limitations in data loading
+2. UPDATE syntax in Redshift is different from other databases
+3. The associated CSV file has a specific format for Redshift
+-->
     <changeSet id="1" author="as">
         <loadUpdateData file="loadUpdateData.csv"
                         relativeToChangelogFile="true"

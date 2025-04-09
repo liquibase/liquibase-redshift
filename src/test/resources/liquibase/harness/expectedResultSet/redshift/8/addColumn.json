@@ -1,0 +1,25 @@
+{
+  "resultSet": {
+    "rows": [
+      {
+        "id": 1,
+        "name": "test",
+        "test_column": null
+      }
+    ],
+    "columns": [
+      {
+        "name": "id",
+        "type": "int4"
+      },
+      {
+        "name": "name",
+        "type": "varchar"
+      },
+      {
+        "name": "test_column",
+        "type": "int4"
+      }
+    ]
+  }
+} 

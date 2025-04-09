@@ -4,17 +4,16 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-
-    <changeSet author="oleh" id="1">
+    <!-- Redshift doesn't support indexes. This is a no-op version of the changelog -->
+    <changeSet id="1" author="claude">
+        <comment>Redshift doesn't support standard indexes, using primary key instead</comment>
         <createTable tableName="test_table">
-            <column name="test_id" type="int">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="test_column" type="varchar(50)">
-                <constraints nullable="false"/>
+            <column name="id" type="INT">
+                <constraints primaryKey="true" primaryKeyName="test_pk"/>
             </column>
         </createTable>
+        <rollback>
             <dropTable tableName="test_table"/>
-        <rollback/>
+        </rollback>
     </changeSet>
 </databaseChangeLog>
