@@ -1,0 +1,3 @@
+-- INVALID TEST
+-- Redshift has limited support for functions
+-- https://docs.aws.amazon.com/redshift/latest/dg/c_unsupported-postgresql-features.html

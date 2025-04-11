@@ -11,11 +11,7 @@
       "liquibase.structure.core.UniqueConstraint": [
         {
           "uniqueConstraint": {
-            "deferrable": false,
-            "disabled": false,
-            "initiallyDeferred": false,
-            "name": "test_unique_constraint",
-            "validate": true
+            "name": "test_unique_constraint"
           }
         }
       ]

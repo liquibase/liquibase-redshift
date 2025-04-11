@@ -7,6 +7,13 @@
             "name": "test_table"
           }
         }
+      ],
+      "liquibase.structure.core.PrimaryKey": [
+        {
+          "primaryKey": {
+            "name": "test_pk"
+          }
+        }
       ]
     }
   }

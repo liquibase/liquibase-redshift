@@ -4,16 +4,21 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-<!--    Redshift doesn't support indexes. Remove this test case after DAT-12905 is resolved-->
-    <changeSet id="1" author="as">
+    <changeSet id="1" author="claude">
         <createTable tableName="test_table">
-            <column name="id" type="INT">
-                <constraints primaryKey="true" primaryKeyName="test_pk"/>
-            </column>
+            <column name="id" type="INT"/>
+            <column name="name" type="VARCHAR(255)"/>
         </createTable>
         <rollback>
             <dropTable tableName="test_table"/>
         </rollback>
     </changeSet>
-    <!-- Removed createIndex changeSet since Redshift doesn't support indexes -->
+    <changeSet id="2" author="claude">
+        <createView viewName="test_view">
+            SELECT id, name FROM test_table
+        </createView>
+        <rollback>
+            <dropView viewName="test_view"/>
+        </rollback>
+    </changeSet>
 </databaseChangeLog>

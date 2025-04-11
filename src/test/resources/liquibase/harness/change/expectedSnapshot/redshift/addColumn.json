@@ -1,7 +1,7 @@
 {
   "snapshot": {
     "objects": {
-      "liquibase.structure.core.View": []
+      "liquibase.structure.core.Column": []
     }
   }
 }

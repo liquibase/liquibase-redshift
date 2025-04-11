@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!-- This is a placeholder changelog for snapshotCatalogAndSchema test -->
+    <!-- The test verifies the catalog and schema names from the database connection -->
+    <changeSet id="1" author="claude">
+        <comment>Empty changeset to support the catalog and schema snapshot test</comment>
+        <sql>SELECT 1</sql>
+        <rollback>
+            <sql>SELECT 1</sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

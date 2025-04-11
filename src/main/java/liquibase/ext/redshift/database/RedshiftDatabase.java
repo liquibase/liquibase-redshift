@@ -8,6 +8,8 @@ import liquibase.statement.core.RawSqlStatement;
 import liquibase.util.StringUtil;
 import liquibase.database.ObjectQuotingStrategy;
 import liquibase.structure.DatabaseObject;
+import liquibase.structure.core.ForeignKey;
+import liquibase.structure.core.Index;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -238,5 +240,22 @@ public class RedshiftDatabase extends PostgresDatabase {
     protected SqlStatement getConnectionSchemaNameCallStatement() {
         return new RawSqlStatement("select current_schema()");
     }
+    
+    @Override
+    public boolean supportsDDLInTransaction() {
+        return false;
+    }
 
+    @Override
+    public boolean supportsSequences() {
+        return false;
+    }
+
+    @Override
+    public boolean supports(Class<? extends DatabaseObject> objectType) {
+        if (Index.class.isAssignableFrom(objectType) || ForeignKey.class.isAssignableFrom(objectType)) {
+            return false;
+        }
+        return super.supports(objectType);
+    }
 }

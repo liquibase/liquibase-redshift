@@ -1,1 +1,2 @@
 liquibase.ext.redshift.snapshot.ForeignKeySnapshotGenerator
+liquibase.ext.redshift.snapshot.IndexSnapshotGenerator
