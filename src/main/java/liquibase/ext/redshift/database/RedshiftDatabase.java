@@ -8,6 +8,7 @@ import liquibase.statement.core.RawSqlStatement;
 import liquibase.util.StringUtil;
 import liquibase.database.ObjectQuotingStrategy;
 import liquibase.structure.DatabaseObject;
+import liquibase.structure.core.ForeignKey;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -244,4 +245,11 @@ public class RedshiftDatabase extends PostgresDatabase {
         return false;
     }
 
+    @Override
+    public boolean supports(Class<? extends DatabaseObject> object) {
+        if (ForeignKey.class.isAssignableFrom(object)) {
+            return false; // Redshift doesn't support foreign keys
+        }
+        return super.supports(object);
+    }
 }
