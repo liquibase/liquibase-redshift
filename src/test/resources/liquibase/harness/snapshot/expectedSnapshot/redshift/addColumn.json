@@ -23,7 +23,7 @@
             "name": "intColumn",
             "nullable": true,
             "type": {
-              "typeName": "int"
+              "typeName": "int4"
             }
           }
         },
