@@ -1,34 +1,39 @@
 {
   "snapshot": {
     "objects": {
-      "liquibase.structure.core.Catalog": [
+      "liquibase.structure.core.Table": [
         {
-          "catalog": {
-            "name": "lbcat"
-          }
-        }
-      ],
-      "liquibase.structure.core.Schema": [
-        {
-          "schema": {
-            "name": "public"
+          "table": {
+            "name": "test_table"
           }
         }
       ],
       "liquibase.structure.core.Column": [
         {
           "column": {
-            "name": "varcharColumn"
+            "name": "varcharColumn",
+            "nullable": true,
+            "type": {
+              "typeName": "varchar"
+            }
           }
         },
         {
           "column": {
-            "name": "intColumn"
+            "name": "intColumn",
+            "nullable": true,
+            "type": {
+              "typeName": "int"
+            }
           }
         },
         {
           "column": {
-            "name": "dateColumn"
+            "name": "dateColumn",
+            "nullable": true,
+            "type": {
+              "typeName": "date"
+            }
           }
         }
       ]
