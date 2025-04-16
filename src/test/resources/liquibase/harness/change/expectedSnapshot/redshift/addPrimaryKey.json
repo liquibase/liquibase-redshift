@@ -1,0 +1,20 @@
+{
+  "snapshot": {
+    "objects": {
+      "liquibase.structure.core.Table": [
+        {
+          "table": {
+            "name": "posts"
+          }
+        }
+      ],
+      "liquibase.structure.core.PrimaryKey": [
+        {
+          "primaryKey": {
+            "_noMatch": true
+          }
+        }
+      ]
+    }
+  }
+}

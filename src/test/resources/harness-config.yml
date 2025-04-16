@@ -3,6 +3,6 @@ context: testContext
 
 databasesUnderTest:
   - name: redshift
-    url: DBENDPOINT
-    username: USERNAME
-    password: PASSWORD
+    url: DBURL
+    username: DBUSERNAME
+    password: DBPASSWORD

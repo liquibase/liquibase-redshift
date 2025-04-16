@@ -1,6 +1,20 @@
 {
   "snapshot": {
     "objects": {
+      "liquibase.structure.core.Catalog": [
+        {
+          "catalog": {
+            "name": "lbcat"
+          }
+        }
+      ],
+      "liquibase.structure.core.Schema": [
+        {
+          "schema": {
+            "name": "public"
+          }
+        }
+      ],
       "liquibase.structure.core.Table": [
         {
           "table": {
@@ -11,7 +25,6 @@
       "liquibase.structure.core.View": [
         {
           "view": {
-            "definition": "SELECT view_table.test_column FROM view_table;",
             "name": "test_view"
           }
         }

@@ -17,105 +17,110 @@
     <url>https://github.com/liquibase/liquibase-redshift</url>
 
     <properties>
+        <maven.enforcer.requireJavaVersion>${maven.compiler.source}</maven.enforcer.requireJavaVersion>
         <liquibase.version>4.31.1</liquibase.version>
-        <jacoco.fileset.directory>target</jacoco.fileset.directory>
+        <liquibase.sdk.github.token>${env.GITHUB_TOKEN}</liquibase.sdk.github.token>
+        <sonar.tests>src/test/groovy</sonar.tests>
+        <junit.version>5.11.4</junit.version>
+        <junit-platform.version>1.11.4</junit-platform.version>
     </properties>
 
     <scm>
         <connection>scm:git:${project.scm.url}</connection>
         <developerConnection>scm:git:${project.scm.url}</developerConnection>
-	<url>https://github.com/liquibase/liquibase-redshift.git</url>
-	<tag>HEAD</tag>
+        <url>https://github.com/liquibase/liquibase-redshift.git</url>
+        <tag>HEAD</tag>
     </scm>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <scope>test</scope>
-                <version>4.13.2</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
+        <dependency>
+            <groupId>net.bytebuddy</groupId>
+            <artifactId>byte-buddy</artifactId>
+            <version>1.17.2</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.amazon.redshift</groupId>
             <artifactId>redshift-jdbc42</artifactId>
             <version>2.1.0.32</version>
         </dependency>
+        <!-- AWS SDK dependencies needed by the Redshift JDBC driver -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-bundle</artifactId>
+            <version>1.12.656</version>
+        </dependency>
+        <!-- JSON libraries needed for test harness -->
+        <dependency>
+            <groupId>org.skyscreamer</groupId>
+            <artifactId>jsonassert</artifactId>
+            <version>1.5.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit-platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <version>${junit-platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-test-harness</artifactId>
-            <version>1.0.9</version>
+            <version>1.0.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.17</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources-filtered</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>false</filtering>
-            </testResource>
-            <testResource>
-                <directory>src/test/filtered-resources</directory>
-                <filtering>true</filtering>
-            </testResource>
-        </testResources>
         <plugins>
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.12</version>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <fileSets>
-                        <fileSet>
-                            <directory>${jacoco.fileset.directory}</directory>
-                            <includes>
-                                <include>**/jacoco.exec</include>
-                            </includes>
-                        </fileSet>
-                    </fileSets>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
                 </configuration>
             </plugin>
-             <plugin>
-                 <artifactId>maven-surefire-plugin</artifactId>
-                 <dependencies>
-                     <dependency>
-                         <groupId>org.apache.maven.surefire</groupId>
-                         <artifactId>surefire-junit4</artifactId>
-                         <version>3.5.2</version>
-                     </dependency>
-                 </dependencies>
-                 <configuration>
-                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                 </configuration>
-             </plugin>
-            <!-- This will be cleaned after the next liquibase parent pom release-->
-             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/IT*.java</include>
-                        <include>**/*IT.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-         </plugins>
-        <!-- Need to keep final name in sync with the final name of the maven-assembly-plugin configuration-->
-        <!-- in order to only generate single jar with dependencies-->
+        </plugins>
     </build>
+
 </project>

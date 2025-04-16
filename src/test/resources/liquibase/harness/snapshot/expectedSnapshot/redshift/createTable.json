@@ -1,6 +1,20 @@
 {
   "snapshot": {
     "objects": {
+      "liquibase.structure.core.Catalog": [
+        {
+          "catalog": {
+            "name": "lbcat"
+          }
+        }
+      ],
+      "liquibase.structure.core.Schema": [
+        {
+          "schema": {
+            "name": "public"
+          }
+        }
+      ],
       "liquibase.structure.core.Table": [
         {
           "table": {
@@ -11,10 +25,7 @@
       "liquibase.structure.core.Column": [
         {
           "column": {
-            "name": "snapshot_test_column",
-            "type": {
-              "typeName": "int4"
-            }
+            "name": "snapshot_test_column"
           }
         }
       ]

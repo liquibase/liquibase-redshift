@@ -13,12 +13,12 @@ public class RedshiftDatabaseTest {
     public void testGetShortName() throws Exception {
         assertEquals("redshift", new RedshiftDatabase().getShortName());
     }
-    
+
     @Test
     public void testGetConnectionSchemaNameCallStatement() throws Exception {
-        
+
         SqlStatement sqlStatement = new RedshiftDatabase().getConnectionSchemaNameCallStatement();
-        
+
         assertEquals(RawSqlStatement.class, sqlStatement.getClass());
         assertEquals("select current_schema()", ((RawSqlStatement)sqlStatement).getSql());
     }

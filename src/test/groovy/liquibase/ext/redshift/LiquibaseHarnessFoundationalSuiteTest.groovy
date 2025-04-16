@@ -1,11 +1,19 @@
 package liquibase.ext.redshift
 
 import liquibase.harness.FoundationalHarnessSuite
-import liquibase.harness.config.TestConfig
+import liquibase.database.DatabaseFactory
+import liquibase.ext.redshift.database.RedshiftDatabase
+import org.junit.BeforeClass
 
 class LiquibaseHarnessFoundationalSuiteTest extends FoundationalHarnessSuite {
-    static {
-        //extensions don't distribute their files. Only we store them in src/main/resources.
-        TestConfig.instance.outputResourcesBase = "src/main/resources"
+
+    @BeforeClass
+    static void setupRedshiftTests() {
+        // Register Redshift database implementation with highest priority
+        DatabaseFactory.getInstance().clearRegistry()
+        DatabaseFactory.getInstance().register(new RedshiftDatabase())
+        
+        // Force the use of Redshift database implementation
+        System.setProperty("liquibase.ext.redshift.force", "true")
     }
 }
