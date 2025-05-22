@@ -1,208 +1,30 @@
 name: Build and Test
 
 on:
-  workflow_dispatch:
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - reopened
       - synchronize
 
+permissions:
+  contents: read
+  pull-requests: write
+  packages: read
+
 jobs:
   authorize:
-    environment: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'external' || 'internal' }}
+    environment: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository && 'external' || 'internal' }}
     runs-on: ubuntu-latest
     steps:
       - run: true
 
-  build:
+  build-test:
     needs: authorize
     uses: liquibase/build-logic/.github/workflows/os-extension-test.yml@main
     secrets: inherit
-    with:
-      extraMavenArgs: -Dtest="RedshiftDatabaseTest"
 
-  deploy-ephemeral-cloud-infra:
-    uses: liquibase/build-logic/.github/workflows/ephemeral-cloud-infra.yml@main
-    secrets: inherit
-    with:
-      deploy: true
-      aws_redshift: true
-
-  prepare-database:
-    name: Clean and initialize database
-    needs: [build, deploy-ephemeral-cloud-infra]
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-    container:
-      image: liquibase/liquibase:latest
-
-    strategy:
-      fail-fast: false
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: liquibase-redshift-artifacts
-
-      # FIXME the redshift jar version should come from the pom.xml file
-      - name: Download AWS Redshift driver
-        run: wget https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
-
-      - name: Add Redshift extension and driver to liquibase classpath
-        run: |
-          cp redshift-jdbc42-2.1.0.14.jar /liquibase/lib/
-          cp liquibase-redshift-*-SNAPSHOT.jar /liquibase/lib/
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_DEV_GITHUB_OIDC_ROLE_ARN_BUILD_LOGIC }}
-          aws-region: us-east-1
-
-      - name: Get TH_REDSHIFT_URL secret
-        uses: aws-actions/aws-secretsmanager-get-secrets@v2
-        with:
-          secret-ids: |
-            TH_REDSHIFTURL, /testautomation/db_details/aws_redshift_jdbc_${{ needs.deploy-ephemeral-cloud-infra.outputs.resources_id }}
-
-      - name: Clean AWS Redshift Database
-        run: |
-          echo "TH_REDSHIFTURL is ${{ env.TH_REDSHIFTURL }}"
-          liquibase --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${{ env.TH_REDSHIFTURL }}" dropAll
-
-      - name: Init Database
-        run: |
-          # Create modified URL with autosave parameter
-          MODIFIED_URL="${{ env.TH_REDSHIFTURL }}?autosave=always&tcpKeepAlive=true"
-          echo "Using modified URL with autosave parameter for database initialization"
-          liquibase --classpath="src/test/resources" --changeLogFile="harness.initScript.sql" --username="${{ secrets.TH_DB_ADMIN }}" --password="${{ secrets.TH_DB_PASSWD }}" --url="${MODIFIED_URL}" update
-
-  integration-test:
-    name: Test Harness for Redshift ${{ matrix.redshift }}
-    needs: [prepare-database, deploy-ephemeral-cloud-infra]
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
-
-    strategy:
-      fail-fast: false
-      matrix:
-        redshift: [""]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: "temurin"
-          cache: "maven"
-
-      - name: Build Cache
-        uses: actions/cache@v4.2.3
-        with:
-          key: build-${{ github.run_number }}-${{ github.run_attempt }}
-          path: |
-            **/target/**
-            ~/.m2/repository/org/liquibase/
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_DEV_GITHUB_OIDC_ROLE_ARN_BUILD_LOGIC }}
-          aws-region: us-east-1
-
-      - name: Get TH_REDSHIFT_URL secret
-        uses: aws-actions/aws-secretsmanager-get-secrets@v2
-        with:
-          secret-ids: |
-            TH_REDSHIFTURL, /testautomation/db_details/aws_redshift_jdbc_${{ needs.deploy-ephemeral-cloud-infra.outputs.resources_id }}
-
-      - name: Create Test Connection Script
-        run: |
-          cat > TestConnection.java << EOF
-          import java.sql.Connection;
-          import java.sql.DriverManager;
-          import java.sql.SQLException;
-          
-          public class TestConnection {
-              public static void main(String[] args) {
-                  String url = args[0];
-                  String username = args[1];
-                  String password = args[2];
-                  
-                  System.out.println("Testing connection to: " + url);
-                  System.out.println("Using username: " + username);
-                  
-                  try {
-                      // Force loading the Redshift JDBC driver
-                      try {
-                          Class.forName("com.amazon.redshift.jdbc42.Driver");
-                          System.out.println("Redshift JDBC driver loaded successfully");
-                      } catch (ClassNotFoundException e) {
-                          System.out.println("WARNING: Redshift JDBC driver not found: " + e.getMessage());
-                      }
-                      
-                      Connection conn = DriverManager.getConnection(url, username, password);
-                      System.out.println("CONNECTION SUCCESSFUL!");
-                      conn.close();
-                  } catch (SQLException e) {
-                      System.out.println("CONNECTION FAILED!");
-                      System.out.println("Error: " + e.getMessage());
-                      System.out.println("SQLState: " + e.getSQLState());
-                      System.out.println("Error Code: " + e.getErrorCode());
-                  }
-              }
-          }
-          EOF
-          
-      - name: Download and Set Up Redshift JDBC Driver
-        run: |
-          # Download driver to a known location
-          wget -O redshift-jdbc42.jar https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
-          echo "Downloaded Redshift JDBC driver"
-          
-      - name: Compile and Run Connection Test
-        run: |
-          javac TestConnection.java
-          # Add the Redshift JDBC driver to the classpath explicitly
-          java -cp .:./redshift-jdbc42.jar TestConnection "${{ env.TH_REDSHIFTURL }}" "${{ secrets.TH_DB_ADMIN }}" "${{ secrets.TH_DB_PASSWD }}" || echo "Connection test exited with error but continuing workflow"
-          
-      - name: Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} -Dliquibase.ext.redshift.force=true -Dliquibase.logLevel=DEBUG -Dliquibase.autoCommit=true test
-
-      - name: Foundational Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} -Dliquibase.ext.redshift.force=true -Dliquibase.logLevel=DEBUG -Dliquibase.autoCommit=true test
-
-      - name: Advanced Harness Test Run
-        run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{env.TH_REDSHIFTURL}} -Dliquibase.ext.redshift.force=true -Dliquibase.logLevel=DEBUG -Dliquibase.autoCommit=true test
-
-      - name: Archive Redshift Test Results
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: redshift-test-results
-          path: build/spock-reports
-
-  dependabot-automerge:
-    needs: build
+  dependabot:
+    needs: build-test
     uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@main
     secrets: inherit
-
-  destroy-ephemeral-cloud-infra:
-    if: always()
-    needs: [deploy-ephemeral-cloud-infra, prepare-database, integration-test]
-    uses: liquibase/build-logic/.github/workflows/ephemeral-cloud-infra.yml@main
-    secrets: inherit
-    with:
-      destroy: true
-      stack_id: ${{ needs.deploy-ephemeral-cloud-infra.outputs.stack_id }}
-      aws_redshift: true
