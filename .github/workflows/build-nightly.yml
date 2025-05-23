@@ -16,4 +16,5 @@ jobs:
     uses: liquibase/build-logic/.github/workflows/os-extension-test.yml@main
     with:
       nightly: true
+      extraMavenArgs: -Dtest="RedshiftDatabaseTest"
     secrets: inherit
