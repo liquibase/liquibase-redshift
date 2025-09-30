@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-parent-pom</artifactId>
-        <version>0.5.8</version> <!-- Replace with the desired version -->
+        <version>1.0.0</version> <!-- Replace with the desired version -->
     </parent>
 
     <groupId>org.liquibase.ext</groupId>
     <artifactId>liquibase-redshift</artifactId>
-    <version>4.33.0-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
 
     <name>Liquibase Extension Amazon Redshift support</name>
     <description>Add this Liquibase extension to your project to support Amazon Redshift</description>
@@ -18,7 +18,7 @@
 
     <properties>
         <maven.enforcer.requireJavaVersion>${maven.compiler.source}</maven.enforcer.requireJavaVersion>
-        <liquibase.version>4.33.0</liquibase.version>
+        <liquibase.version>5.0.0</liquibase.version>
         <liquibase.sdk.github.token>${env.GITHUB_TOKEN}</liquibase.sdk.github.token>
         <sonar.tests>src/test/groovy</sonar.tests>
         <junit.version>5.11.4</junit.version>
