@@ -8,6 +8,7 @@ import liquibase.executor.ExecutorService;
 import liquibase.ext.redshift.database.RedshiftDatabase;
 import liquibase.snapshot.DatabaseSnapshot;
 import liquibase.snapshot.SnapshotGenerator;
+import liquibase.snapshot.jvm.ColumnSnapshotGenerator;
 import liquibase.statement.core.RawParameterizedSqlStatement;
 import liquibase.structure.DatabaseObject;
 import liquibase.structure.core.Column;
@@ -15,7 +16,7 @@ import liquibase.structure.core.Column;
 import java.util.List;
 import java.util.Map;
 
-public class RedshiftColumnSnapshotGenerator extends liquibase.snapshot.jvm.ColumnSnapshotGenerator {
+public class RedshiftColumnSnapshotGenerator extends ColumnSnapshotGenerator {
 
     @Override
     public int getPriority(Class<? extends DatabaseObject> objectType, Database database) {
@@ -27,7 +28,7 @@ public class RedshiftColumnSnapshotGenerator extends liquibase.snapshot.jvm.Colu
 
     @Override
     public Class<? extends SnapshotGenerator>[] replaces() {
-        return new Class[] { liquibase.snapshot.jvm.ColumnSnapshotGenerator.class };
+        return new Class[] { ColumnSnapshotGenerator.class };
     }
 
     @Override
