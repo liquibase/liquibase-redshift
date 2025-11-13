@@ -252,4 +252,9 @@ public class RedshiftDatabase extends PostgresDatabase {
         }
         return super.supports(object);
     }
+
+    @Override
+    public boolean supportsSequences() {
+        return false;
+    }
 }
