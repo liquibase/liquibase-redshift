@@ -1,0 +1,70 @@
+{
+  "snapshot": {
+    "objects": {
+      "liquibase.structure.core.Table": [
+        {
+          "table": {
+            "name": "test_identity_always"
+          }
+        },
+        {
+          "table": {
+            "name": "test_identity_by_default"
+          }
+        },
+        {
+          "table": {
+            "name": "test_identity_simple"
+          }
+        },
+        {
+          "table": {
+            "name": "test_table"
+          }
+        }
+      ],
+      "liquibase.structure.core.Column": [
+        {
+          "column": {
+            "name": "id_always",
+            "autoIncrementInformation": {
+              "startWith": "100\\!\\{java.math.BigInteger\\}",
+              "incrementBy": "5\\!\\{java.math.BigInteger\\}",
+              "generationType": "ALWAYS"
+            }
+          }
+        },
+        {
+          "column": {
+            "name": "id_by_default",
+            "autoIncrementInformation": {
+              "startWith": "100\\!\\{java.math.BigInteger\\}",
+              "incrementBy": "5\\!\\{java.math.BigInteger\\}",
+              "generationType": "BY DEFAULT"
+            }
+          }
+        },
+        {
+          "column": {
+            "name": "id_simple",
+            "autoIncrementInformation": {
+              "startWith": "100\\!\\{java.math.BigInteger\\}",
+              "incrementBy": "5\\!\\{java.math.BigInteger\\}",
+              "generationType": "ALWAYS"
+            }
+          }
+        },
+        {
+          "column": {
+            "name": "test_id"
+          }
+        },
+        {
+          "column": {
+            "name": "test_column"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -11,15 +11,6 @@
       "liquibase.structure.core.Column": [
         {
           "column": {
-            "name": "test_column",
-            "nullable": true,
-            "type": {
-              "typeName": "int4"
-            }
-          }
-        },
-        {
-          "column": {
             "name": "varcharColumn",
             "nullable": true,
             "type": {

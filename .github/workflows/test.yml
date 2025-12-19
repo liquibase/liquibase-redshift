@@ -2,15 +2,21 @@ name: Build and Test
 
 on:
   workflow_dispatch:
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - reopened
       - synchronize
+      
+permissions:
+  contents: write
+  pull-requests: write
+  packages: read
+  id-token: write
 
 jobs:
   authorize:
-    environment: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && 'external' || 'internal' }}
+    environment: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.head.repo.full_name != github.repository && 'external' || 'internal' }}
     runs-on: ubuntu-latest
     steps:
       - run: true
@@ -19,173 +25,8 @@ jobs:
     needs: authorize
     uses: liquibase/build-logic/.github/workflows/os-extension-test.yml@main
     secrets: inherit
-    with:
-      extraMavenArgs: -Dtest="RedshiftDatabaseTest"
 
-  prepare-database:
-    name: Clean and initialize database
+  dependabot:
     needs: build-test
-    runs-on: ubuntu-latest
-    env:
-      LPM_VERSION: 0.2.3
-    strategy:
-      fail-fast: false
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: liquibase-redshift-artifacts
-    
-      - name: Extract Liquibase Redshift Artifacts version
-        run: |
-          version=$(ls liquibase-redshift*.pom | cut -d '-' -f3)
-          echo "Liquibase Redshift Artifacts version: $version"
-          echo "lb_redshift_jar=liquibase-redshift-$version-SNAPSHOT.jar" >> $GITHUB_ENV
-
-      - name: Install liquibase
-        run: |
-          wget -O- https://repo.liquibase.com/liquibase.asc | gpg --dearmor > liquibase-keyring.gpg && \
-          cat liquibase-keyring.gpg | sudo tee /usr/share/keyrings/liquibase-keyring.gpg > /dev/null && \
-          echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/liquibase-keyring.gpg] https://repo.liquibase.com stable main' | sudo tee /etc/apt/sources.list.d/liquibase.list
-          sudo apt-get update
-          sudo apt-get install liquibase
-          
-      # FIXME the redshift jar version should come from the pom.xml file
-      - name: Download AWS Redshift driver
-        run: wget https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.1.0.14/redshift-jdbc42-2.1.0.14.jar
-
-      - name: Add Redshift extension and driver to liquibase classpath
-        run: |
-          cp redshift-jdbc42-2.1.0.14.jar src/test/resources/
-          cp ${{ env.lb_redshift_jar }} src/test/resources/
- 
-      - name: Setup Python
-        uses: actions/setup-python@v5.3.0
-        with:
-          python-version: '3.11.5'
-           
-      - name: Set up Docker Buildx
-        uses: docker/setup-docker-action@v4
-
-      - name: Start & Configure LocalStack
-        env:
-          LOCALSTACK_API_KEY: ${{ secrets.LOCALSTACK_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
-          TH_REDSHIFT_PASSWORD: ${{ secrets.TH_REDSHIFT_PASSWORD }}
-        run: |
-          # Install LocalStack and supporting tools
-          pip install localstack awscli-local
-
-          # Pull the required LocalStack Pro image
-          docker pull localstack/localstack-pro
-
-          # Start LocalStack with custom Redshift support
-          DOCKER_FLAGS='-e LOCALSTACK_API_KEY=${{ secrets.LOCALSTACK_API_KEY }}' localstack start -d
-
-          # Wait for LocalStack to fully start
-          echo "Waiting for LocalStack startup..."
-          localstack wait -t 30
-          echo "Startup complete"
-
-          # Configure environment variables for Redshift
-          echo "TH_REDSHIFT_CLUSTER=test-redshift-cluster" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_DB=test_db" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_USER=admin" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_PASSWORD=${{ secrets.TH_REDSHIFT_PASSWORD }}" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_PORT=4510" >> $GITHUB_ENV
-          echo "TH_REDSHIFT_REGION=us-east-1" >> $GITHUB_ENV
-
-      - name: Setup Redshift Cluster
-        run: |  
-          # Set up Redshift cluster in LocalStack
-          echo "Creating Redshift cluster in LocalStack..."
-          awslocal redshift create-cluster \
-            --cluster-identifier ${{ env.TH_REDSHIFT_CLUSTER }} \
-            --db-name ${{ env.TH_REDSHIFT_DB }} \
-            --master-username ${{ env.TH_REDSHIFT_USER }} \
-            --master-user-password ${{ env.TH_REDSHIFT_PASSWORD }} \
-            --node-type dc2.large \
-            --number-of-nodes 2
-
-          # Fetch Redshift cluster endpoint
-          echo "Fetching Redshift cluster endpoint..."
-          REDSHIFT_ENDPOINT=$(awslocal redshift describe-clusters \
-            --cluster-identifier ${{ env.TH_REDSHIFT_CLUSTER }} \
-            --query "Clusters[0].Endpoint.Address" \
-            --output text)
-
-          # Construct Redshift URL
-          REDSHIFT_URL="jdbc:redshift://${REDSHIFT_ENDPOINT}:${{ env.TH_REDSHIFT_PORT }}/${TH_REDSHIFT_DB}"
-          echo "REDSHIFT_URL=${REDSHIFT_URL}" >> $GITHUB_ENV
-
-          echo "Redshift cluster setup complete."
-          echo "Redshift URL: $REDSHIFT_URL"
-          
-      - name: Clean AWS Redshift Database
-        run: |
-          liquibase --logLevel=DEBUG --username="${{ env.TH_REDSHIFT_USER }}" \
-          --classpath="src/test/resources/${{ env.lb_redshift_jar }}:src/test/resources/redshift-jdbc42-2.1.0.14.jar" \
-          --driver=com.amazon.redshift.jdbc42.Driver \
-          --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
-          --url="${{ env.REDSHIFT_URL }}?ssl=false" dropAll 
-
-      - name: Init Database
-        run: | 
-          liquibase --classpath="src/test/resources/${{ env.lb_redshift_jar }}:src/test/resources/redshift-jdbc42-2.1.0.14.jar" \
-          --changeLogFile="harness.initScript.sql" \
-           --username="${{ env.TH_REDSHIFT_USER }}" \
-           --password="${{ env.TH_REDSHIFT_PASSWORD }}" \
-           --url="${{ env.REDSHIFT_URL }}?ssl=false" update
-
-  # integration-test:
-  #   name: Test Harness for Redshift ${{ matrix.redshift }}
-  #   needs: prepare-database
-  #   runs-on: ubuntu-latest
-
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       redshift: [ "" ]
-
-  #   steps:
-  #     - uses: actions/checkout@v2
-
-  #     - name: Set up JDK
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         java-version: 11
-  #         distribution: 'temurin'
-  #         cache: 'maven'
-
-  #     - name: Build Cache
-  #       uses: actions/cache@v3.0.5
-  #       with:
-  #         key: build-${{ github.run_number }}-${{ github.run_attempt }}
-  #         path: |
-  #           **/target/**
-  #           ~/.m2/repository/org/liquibase/
-
-  #     - name: Harness Test Run
-  #       run: mvn -Dtest="LiquibaseHarnessSuiteIT" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
-
-  #     - name: Foundational Harness Test Run
-  #       run: mvn -Dtest="LiquibaseHarnessFoundationalSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
-
-  #     - name: Advanced Harness Test Run
-  #       run: mvn -Dtest="LiquibaseHarnessAdvancedSuiteTest" -DdbName=redshift -DdbUsername=${{secrets.TH_DB_ADMIN}} -DdbPassword=${{secrets.TH_DB_PASSWD}} -DdbUrl=${{secrets.TH_REDSHIFTURL}} test
-
-  #     - name: Archive Redshift Test Results
-  #       if: ${{ always() }}
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: redshift-test-results
-  #         path: build/spock-reports
-
-  # dependabot-automerge:
-  #   needs: build-test
-  #   uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@main
-  #   secrets: inherit
+    uses: liquibase/build-logic/.github/workflows/dependabot-automerge.yml@main
+    secrets: inherit
