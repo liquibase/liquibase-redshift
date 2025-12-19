@@ -7,7 +7,7 @@ on:
       - opened
       - reopened
       - synchronize
-
+      
 permissions:
   contents: write
   pull-requests: write
