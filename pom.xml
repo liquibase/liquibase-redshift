@@ -118,6 +118,13 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <!-- Skip junit-platform-suite engine on PR builds: liquibase-test-harness
+                         ships @Suite-annotated classes that need a live Redshift connection,
+                         which the PR workflow does not provision. Harness suites run in the
+                         nightly build instead. -->
+                    <excludeJUnit5Engines>
+                        <exclude>junit-platform-suite</exclude>
+                    </excludeJUnit5Engines>
                 </configuration>
             </plugin>
         </plugins>
